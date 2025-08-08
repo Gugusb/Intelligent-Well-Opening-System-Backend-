@@ -22,7 +22,7 @@ public class SchedulingConfig implements SchedulingConfigurer {
 
     @Bean
     public Executor taskExecutor() {
-        return Executors.newScheduledThreadPool(5); // 独立线程池
+        return Executors.newScheduledThreadPool(6); // 独立线程池
     }
 
 }
