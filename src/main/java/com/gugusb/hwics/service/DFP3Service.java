@@ -1,9 +1,9 @@
 package com.gugusb.hwics.service;
 
 import com.gugusb.hwics.exception.ExceptionAdvice;
-import com.gugusb.hwics.mapper.DFP1Mapper;
-import com.gugusb.hwics.pojo.DFP1;
-import com.gugusb.hwics.service.Interface.IDFP1Service;
+import com.gugusb.hwics.mapper.DFP3Mapper;
+import com.gugusb.hwics.pojo.DFP3;
+import com.gugusb.hwics.service.Interface.IDFP3Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,13 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DFP1Service implements IDFP1Service {
+public class DFP3Service implements IDFP3Service {
     @Autowired
-    DFP1Mapper dfp1Mapper;
+    DFP3Mapper dfp3Mapper;
 
     @Override
-    public DFP1 getLeastData() {
-        return dfp1Mapper.findFirstByOrderByDataIdDesc().orElseThrow(() -> {
+    public DFP3 getLeastData() {
+        return dfp3Mapper.findFirstByOrderByDataIdDesc().orElseThrow(() -> {
             throw new IllegalArgumentException("Database is empty");
         });
     }
@@ -29,23 +29,16 @@ public class DFP1Service implements IDFP1Service {
     @Retryable(value = {DataAccessException.class},
             maxAttempts = 3,
             backoff = @Backoff(delay = 5000))
-    @Scheduled(fixedRateString = "${date1.update.interval:100000}")
+    @Scheduled(fixedRateString = "${date3.update.interval:100000}")
     public void periodicUserUpdate() {
         try {
             //从服务器获取一次最新数据
-            dfp1Mapper.save(DFP1.createRandomInstance());
+            dfp3Mapper.save(DFP3.createRandomInstance());
             //System.out.println("data update succeed");
         } catch (Exception ex) {
             Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
-            log.error("从服务器更新数据1失败", ex);
+            log.error("从服务器更新数据3失败", ex);
             throw ex; // 触发重试机制
         }
-    }
-
-    @Override
-    public DFP1 getDFP1(int dataId) {
-        return dfp1Mapper.findById(dataId).orElseThrow(() -> {
-            throw new IllegalArgumentException("ID not found");
-        });
     }
 }

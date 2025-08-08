@@ -3,6 +3,8 @@ package com.gugusb.hwics.pojo;
 import jakarta.persistence.*;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -16,8 +18,9 @@ public class DFP1 {
     @Column(name = "data_id")
     private Integer dataId;          // ID，键值，自增
 
-    @Column(name = "update_time")
-    private String updateTime;         // 存储时间
+    @Column(name = "update_time", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp updateTime;  // 存储时间
 
     @Column(name = "current_mode")
     private Integer currentMode;      // 当前模式，int
@@ -158,12 +161,12 @@ public class DFP1 {
         this.dataId = dataId;
     }
 
-    public String getUpdateTime() {
+    public Timestamp getUpdateTime() {
         return updateTime;
     }
 
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = String.valueOf(updateTime);
+    public void setUpdateTime(Timestamp updateTime) {
+        this.updateTime = updateTime;
     }
 
     public Integer getCurrentMode() {
@@ -458,6 +461,9 @@ public class DFP1 {
     public static DFP1 createRandomInstance() {
         Random random = new Random();
         DFP1 randomObj = new DFP1();
+
+        // 设置当前时间
+        randomObj.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         // 整型范围 [0, 100]
         randomObj.setCurrentMode(random.nextInt(101));
