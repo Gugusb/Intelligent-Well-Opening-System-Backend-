@@ -24,21 +24,4 @@ public class DFP3Service implements IDFP3Service {
             throw new IllegalArgumentException("Database is empty");
         });
     }
-
-    //每隔一段时间从服务器更新一次数据
-    @Retryable(value = {DataAccessException.class},
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 5000))
-    @Scheduled(fixedRateString = "${date3.update.interval:100000}")
-    public void periodicUserUpdate() {
-        try {
-            //从服务器获取一次最新数据
-            dfp3Mapper.save(DFP3.createRandomInstance());
-            //System.out.println("data update succeed");
-        } catch (Exception ex) {
-            Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
-            log.error("从服务器更新数据3失败", ex);
-            throw ex; // 触发重试机制
-        }
-    }
 }

@@ -28,20 +28,4 @@ public class DFP5Service implements IDFP5Service {
         });
     }
 
-    //每隔一段时间从服务器更新一次数据
-    @Retryable(value = {DataAccessException.class},
-            maxAttempts = 3,
-            backoff = @Backoff(delay = 5000))
-    @Scheduled(fixedRateString = "${date5.update.interval:100000}")
-    public void periodicUserUpdate() {
-        try {
-            //从服务器获取一次最新数据
-            dfp5Mapper.save(DFP5.createRandomInstance());
-            //System.out.println("data update succeed");
-        } catch (Exception ex) {
-            Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
-            log.error("从服务器更新数据5失败", ex);
-            throw ex; // 触发重试机制
-        }
-    }
 }
