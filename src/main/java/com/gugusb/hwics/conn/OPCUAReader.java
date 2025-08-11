@@ -90,19 +90,203 @@ public class OPCUAReader implements ClientConnectManager{
     }
 
     private DFP2 storeDPF2(OpcUaClient client) {
-        return new DFP2();
+        // 1. 从classpath加载JSON映射文件
+        InputStream configStream = getClass().getResourceAsStream("/config/dfp2-mapping.json");
+        JsonReader jsonReader = Json.createReader(configStream);
+        JsonObject mappingConfig = jsonReader.readObject();
+        jsonReader.close();
+
+        // 2. 创建目标对象
+        DFP2 dfp2 = new DFP2();
+
+        // 3. 遍历映射关系读取数据
+        for (String fieldName : mappingConfig.keySet()) {
+            String tag = mappingConfig.getString(fieldName);
+
+            try {
+                // 构建节点ID并读取值
+                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
+                Object value = dataValue.getValue().getValue();
+
+                // 4. 反射设置字段值
+                Field field = DFP2.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+
+                // 处理不同字段类型
+                if (field.getType() == float.class || field.getType() == Float.class) {
+                    field.set(dfp2, ((Number) value).floatValue());
+                }
+                else if (field.getType() == double.class || field.getType() == Double.class) {
+                    field.set(dfp2, ((Number) value).doubleValue());
+                }
+                else if (field.getType() == int.class || field.getType() == Integer.class) {
+                    field.set(dfp2, ((Number) value).intValue());
+                }
+                else if (field.getType() == String.class) {
+                    field.set(dfp2, value.toString());
+                }
+                else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                }
+                // 添加其他类型处理...
+            } catch (Exception e) {
+                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+            }
+        }
+        dfp2.fixData();
+        System.out.println("Page2数据更新完成");
+        return dfp2;
     }
 
     private DFP3 storeDPF3(OpcUaClient client) {
-        return new DFP3();
+        // 1. 从classpath加载JSON映射文件
+        InputStream configStream = getClass().getResourceAsStream("/config/dfp3-mapping.json");
+        JsonReader jsonReader = Json.createReader(configStream);
+        JsonObject mappingConfig = jsonReader.readObject();
+        jsonReader.close();
+
+        // 2. 创建目标对象
+        DFP3 dfp2 = new DFP3();
+
+        // 3. 遍历映射关系读取数据
+        for (String fieldName : mappingConfig.keySet()) {
+            String tag = mappingConfig.getString(fieldName);
+
+            try {
+                // 构建节点ID并读取值
+                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
+                Object value = dataValue.getValue().getValue();
+
+                // 4. 反射设置字段值
+                Field field = DFP3.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+
+                // 处理不同字段类型
+                if (field.getType() == float.class || field.getType() == Float.class) {
+                    field.set(dfp2, ((Number) value).floatValue());
+                }
+                else if (field.getType() == double.class || field.getType() == Double.class) {
+                    field.set(dfp2, ((Number) value).doubleValue());
+                }
+                else if (field.getType() == int.class || field.getType() == Integer.class) {
+                    field.set(dfp2, ((Number) value).intValue());
+                }
+                else if (field.getType() == String.class) {
+                    field.set(dfp2, value.toString());
+                }
+                else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                }
+                // 添加其他类型处理...
+            } catch (Exception e) {
+                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+            }
+        }
+        dfp2.fixData();
+        System.out.println("Page3数据更新完成");
+        return dfp2;
     }
 
     private DFP4 storeDPF4(OpcUaClient client) {
-        return new DFP4();
+        // 1. 从classpath加载JSON映射文件
+        InputStream configStream = getClass().getResourceAsStream("/config/dfp4-mapping.json");
+        JsonReader jsonReader = Json.createReader(configStream);
+        JsonObject mappingConfig = jsonReader.readObject();
+        jsonReader.close();
+
+        // 2. 创建目标对象
+        DFP4 dfp2 = new DFP4();
+
+        // 3. 遍历映射关系读取数据
+        for (String fieldName : mappingConfig.keySet()) {
+            String tag = mappingConfig.getString(fieldName);
+
+            try {
+                // 构建节点ID并读取值
+                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
+                Object value = dataValue.getValue().getValue();
+
+                // 4. 反射设置字段值
+                Field field = DFP4.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+
+                // 处理不同字段类型
+                if (field.getType() == float.class || field.getType() == Float.class) {
+                    field.set(dfp2, ((Number) value).floatValue());
+                }
+                else if (field.getType() == double.class || field.getType() == Double.class) {
+                    field.set(dfp2, ((Number) value).doubleValue());
+                }
+                else if (field.getType() == int.class || field.getType() == Integer.class) {
+                    field.set(dfp2, ((Number) value).intValue());
+                }
+                else if (field.getType() == String.class) {
+                    field.set(dfp2, value.toString());
+                }
+                else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                }
+                // 添加其他类型处理...
+            } catch (Exception e) {
+                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+            }
+        }
+        dfp2.fixData();
+        System.out.println("Page4数据更新完成");
+        return dfp2;
     }
 
     private DFP5 storeDPF5(OpcUaClient client) {
-        return new DFP5();
+        // 1. 从classpath加载JSON映射文件
+        InputStream configStream = getClass().getResourceAsStream("/config/dfp5-mapping.json");
+        JsonReader jsonReader = Json.createReader(configStream);
+        JsonObject mappingConfig = jsonReader.readObject();
+        jsonReader.close();
+
+        // 2. 创建目标对象
+        DFP5 dfp2 = new DFP5();
+
+        // 3. 遍历映射关系读取数据
+        for (String fieldName : mappingConfig.keySet()) {
+            String tag = mappingConfig.getString(fieldName);
+
+            try {
+                // 构建节点ID并读取值
+                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
+                Object value = dataValue.getValue().getValue();
+
+                // 4. 反射设置字段值
+                Field field = DFP5.class.getDeclaredField(fieldName);
+                field.setAccessible(true);
+
+                // 处理不同字段类型
+                if (field.getType() == float.class || field.getType() == Float.class) {
+                    field.set(dfp2, ((Number) value).floatValue());
+                }
+                else if (field.getType() == double.class || field.getType() == Double.class) {
+                    field.set(dfp2, ((Number) value).doubleValue());
+                }
+                else if (field.getType() == int.class || field.getType() == Integer.class) {
+                    field.set(dfp2, ((Number) value).intValue());
+                }
+                else if (field.getType() == String.class) {
+                    field.set(dfp2, value.toString());
+                }
+                else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
+                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                }
+                // 添加其他类型处理...
+            } catch (Exception e) {
+                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+            }
+        }
+        dfp2.fixData();
+        System.out.println("Page5数据更新完成");
+        return dfp2;
     }
 
     @Override

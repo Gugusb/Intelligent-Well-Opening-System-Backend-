@@ -326,4 +326,8 @@ public class DFP5 {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 
+    public void fixData(){
+        // 设置当前时间
+        setUpdateTime(new Timestamp(System.currentTimeMillis()));
+    }
 }

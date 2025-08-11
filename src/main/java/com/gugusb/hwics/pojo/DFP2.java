@@ -605,4 +605,8 @@ public class DFP2 {
         }
     }
 
+    public void fixData(){
+        // 设置当前时间
+        setUpdateTime(new Timestamp(System.currentTimeMillis()));
+    }
 }
