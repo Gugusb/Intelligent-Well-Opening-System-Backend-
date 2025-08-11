@@ -34,7 +34,9 @@ public class OpcuaService implements IOpcuaService {
     public void readPageData() throws Exception {
         OPCUAReader example = new OPCUAReader();
         DFPMix newDfpm = new ClientConnectManagerRunner(example, true).run();
-        dfp1Mapper.save(newDfpm.getDfp1());
+        DFP1 dfp1 = newDfpm.getDfp1();
+        dfp1Mapper.save(dfp1);
+        System.out.println(dfp1.toString());
         dfp2Mapper.save(newDfpm.getDfp2());
         dfp3Mapper.save(newDfpm.getDfp3());
         dfp4Mapper.save(newDfpm.getDfp4());

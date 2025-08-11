@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -77,7 +78,10 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp1, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    field.set(dfp1, Boolean.parseBoolean(value.toString()));
+                    if(Objects.equals(value.toString(), "0")){
+                        field.set(dfp1, false);
+                    }else
+                        field.set(dfp1, true);
                 }
                 // 添加其他类型处理...
             } catch (Exception e) {
@@ -127,7 +131,10 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                    if(Objects.equals(value.toString(), "0")){
+                        field.set(dfp2, false);
+                    }else
+                        field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
             } catch (Exception e) {
@@ -177,7 +184,10 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                    if(Objects.equals(value.toString(), "0")){
+                        field.set(dfp2, false);
+                    }else
+                        field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
             } catch (Exception e) {
@@ -227,7 +237,10 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                    if(Objects.equals(value.toString(), "0")){
+                        field.set(dfp2, false);
+                    }else
+                        field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
             } catch (Exception e) {
@@ -277,7 +290,10 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    field.set(dfp2, Boolean.parseBoolean(value.toString()));
+                    if(Objects.equals(value.toString(), "0")){
+                        field.set(dfp2, false);
+                    }else
+                        field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
             } catch (Exception e) {
