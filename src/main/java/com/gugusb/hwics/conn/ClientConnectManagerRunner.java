@@ -1,5 +1,6 @@
 package com.gugusb.hwics.conn;
 
+import com.gugusb.hwics.pojo.DFPMix;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
@@ -65,7 +66,8 @@ public class ClientConnectManagerRunner {
         );
     }
 
-    public void run() {
+    public DFPMix run() {
+        DFPMix dfpMix = null;
         try {
             OpcUaClient client = createClient();
 
@@ -83,14 +85,13 @@ public class ClientConnectManagerRunner {
 
                 try {
                     Thread.sleep(1000);
-                    System.exit(0);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             });
 
             try {
-                clientExample.run(client, future);
+                dfpMix = clientExample.run(client, future);
                 future.get(15, TimeUnit.SECONDS);
             } catch (Throwable t) {
                 logger.error("Error running client example: {}", t.getMessage(), t);
@@ -103,17 +104,12 @@ public class ClientConnectManagerRunner {
 
             try {
                 Thread.sleep(1000);
-                System.exit(0);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-
-        try {
-            Thread.sleep(999_999_999);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Opcua数据结算完成");
+        return dfpMix;
     }
 
 }

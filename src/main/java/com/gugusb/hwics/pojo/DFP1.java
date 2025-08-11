@@ -524,4 +524,9 @@ public class DFP1 {
     private static double roundToTwoDecimals(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
+
+    public void fixData(){
+        // 设置当前时间
+        setUpdateTime(new Timestamp(System.currentTimeMillis()));
+    }
 }

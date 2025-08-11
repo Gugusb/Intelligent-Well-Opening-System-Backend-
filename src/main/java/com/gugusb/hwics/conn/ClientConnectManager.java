@@ -1,5 +1,6 @@
 package com.gugusb.hwics.conn;
 
+import com.gugusb.hwics.pojo.DFPMix;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.identity.AnonymousProvider;
 import org.eclipse.milo.opcua.sdk.client.api.identity.IdentityProvider;
@@ -29,6 +30,6 @@ public interface ClientConnectManager {
         return new UsernameProvider("gugu","Gu_15668456691");
     }
 
-    void run(OpcUaClient client, CompletableFuture<OpcUaClient> future) throws Exception;
+    DFPMix run(OpcUaClient client, CompletableFuture<OpcUaClient> future) throws Exception;
 
 }
