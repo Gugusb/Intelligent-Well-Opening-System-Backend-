@@ -6,6 +6,7 @@ public class DFPMix {
     private DFP3 dfp3;
     private DFP4 dfp4;
     private DFP5 dfp5;
+    private Boolean succeed;
 
     @Override
     public String toString() {
@@ -15,7 +16,16 @@ public class DFPMix {
                 ", dfp3=" + dfp3 +
                 ", dfp4=" + dfp4 +
                 ", dfp5=" + dfp5 +
+                ", succeed=" + succeed +
                 '}';
+    }
+
+    public Boolean getSucceed() {
+        return succeed;
+    }
+
+    public void setSucceed(Boolean succeed) {
+        this.succeed = succeed;
     }
 
     public DFP1 getDfp1() {

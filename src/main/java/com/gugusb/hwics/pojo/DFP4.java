@@ -32,15 +32,26 @@ public class DFP4 {
     @Column(name = "valve1_open_indicator")
     private Boolean valve1OpenIndicator;  // 1#开阀指示，布尔值
 
+    @Column(name = "valve1_stop_indicator")
+    private Boolean valve1StopIndicator;  // 1#关阀指示，布尔值
+
     @Column(name = "valve1_open_status")
     private Boolean valve1OpenStatus;     // 1#阀开到位，布尔值
 
+    @Column(name = "valve1_stop_status")
+    private Boolean valve1StopStatus;     // 1#阀关到位，布尔值
     // 2#阀门状态
     @Column(name = "valve2_open_indicator")
     private Boolean valve2OpenIndicator;  // 2#开阀指示，布尔值
 
     @Column(name = "valve2_open_status")
     private Boolean valve2OpenStatus;     // 2#阀开到位，布尔值
+
+    @Column(name = "valve2_stop_indicator")
+    private Boolean valve2StopIndicator;  // 2#关阀指示，布尔值
+
+    @Column(name = "valve2_stop_status")
+    private Boolean valve2StopStatus;     // 2#阀关到位，布尔值
 
     @Column(name = "dosing_pressure")
     private Integer dosingPressure;  // 加药压力，整型
@@ -57,9 +68,13 @@ public class DFP4 {
                 ", currentMode=" + currentMode +
                 ", dosingRunStatus=" + dosingRunStatus +
                 ", valve1OpenIndicator=" + valve1OpenIndicator +
+                ", valve1StopIndicator=" + valve1StopIndicator +
                 ", valve1OpenStatus=" + valve1OpenStatus +
+                ", valve1StopStatus=" + valve1StopStatus +
                 ", valve2OpenIndicator=" + valve2OpenIndicator +
-                ", valve2OpenStatus=" + valve2OpenStatus +
+                ", valve2OpenStatus=" + valve2StopStatus +
+                ", valve2StopIndicator=" + valve2StopIndicator +
+                ", valve2StopStatus=" + valve2StopStatus +
                 ", dosingPressure=" + dosingPressure +
                 ", dosingLiquidLevel=" + dosingLiquidLevel +
                 '}';
@@ -113,9 +128,22 @@ public class DFP4 {
         this.valve1OpenIndicator = valve1OpenIndicator;
     }
 
+    public Boolean getValve1StopIndicator() {
+        return valve1StopIndicator;
+    }
+
+    public void setValve1StopIndicator(Boolean valve1StopIndicator) {
+        this.valve1StopIndicator = valve1StopIndicator;
+    }
+
     public Boolean getValve1OpenStatus() {
         return valve1OpenStatus;
     }
+
+    public Boolean getValve1StopStatus() {
+        return valve1StopStatus;
+    }
+
 
     public void setValve1OpenStatus(Boolean valve1OpenStatus) {
         this.valve1OpenStatus = valve1OpenStatus;
@@ -128,7 +156,6 @@ public class DFP4 {
     public void setValve2OpenIndicator(Boolean valve2OpenIndicator) {
         this.valve2OpenIndicator = valve2OpenIndicator;
     }
-
     public Boolean getValve2OpenStatus() {
         return valve2OpenStatus;
     }
@@ -136,6 +163,24 @@ public class DFP4 {
     public void setValve2OpenStatus(Boolean valve2OpenStatus) {
         this.valve2OpenStatus = valve2OpenStatus;
     }
+
+    public Boolean getValve2StopIndicator() {
+        return valve2StopIndicator;
+    }
+
+    public void setValve2StopIndicator(Boolean valve2StopIndicator) {
+        this.valve2StopIndicator = valve2StopIndicator;
+    }
+
+    public Boolean getValve2StopStatus() {
+        return valve2StopStatus;
+    }
+
+    public void setValve2StopStatus(Boolean valve2StopStatus) {
+        this.valve2StopStatus = valve2StopStatus;
+    }
+
+
 
     public Integer getDosingPressure() {
         return dosingPressure;
@@ -168,6 +213,8 @@ public class DFP4 {
         randomObj.setValve1OpenStatus(random.nextBoolean());
         randomObj.setValve2OpenIndicator(random.nextBoolean());
         randomObj.setValve2OpenStatus(random.nextBoolean());
+        randomObj.setValve2StopStatus(random.nextBoolean());
+        randomObj.setValve2StopIndicator(random.nextBoolean());
 
         // 整型参数范围 [0, 100]
         randomObj.setCurrentMode(random.nextInt(101));

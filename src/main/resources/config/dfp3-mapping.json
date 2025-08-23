@@ -1,3 +1,19 @@
 {
-  
+  "backendAlarmPressure123": "混输气举撬123.后端报警压力",
+  "backendRecoveryPressure123": "混输气举撬123.后端恢复压力",
+
+  "backendAlarmPressure45" : "混输气举撬456.后端报警压力1",
+  "backendRecoveryPressure45": "混输气举撬456.后端恢复压力1",
+
+  "gaslift1BackendAlarmPressure": "混输气举撬456.1#后端警报压力",
+  "gaslift1BackendRecoveryPressure": "混输气举撬456.1#后端恢复压力",
+    "gaslift2BackendAlarmPressure": "混输气举撬456.2#后端警报压力",
+
+  "unit1Enabled": "混输气举撬123.1#机组状态1",
+  "unit2Enabled": "混输气举撬123.2#机组状态1",
+
+  "unit3Enabled": "混输气举撬123.3#机组状态1",
+  "unit4Enabled": "混输气举撬456.4#机组状态",
+  "unit5Enabled": "混输气举撬456.5#机组状态"
+
 }

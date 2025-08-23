@@ -1,3 +1,17 @@
 {
 
+  "dosingEquipmentStatus": "加药.运行状态",
+  "currentMode": "加药.模式",
+  "dosingRunStatus": "加药.电机状态",
+  "valve1OpenIndicator" : "加药.1#球阀指示",
+  "valve1OpenStatus": "加药.1#开到位",
+  "valve1StopIndicator": "加药.1#球阀指示",
+  "valve1StopStatus" : "加药.1#关到位",
+  "valve2OpenIndicator" : "加药.2#球阀指示",
+  "valve2OpenStatus" : "加药.2#开到位",
+  "valve2StopIndicator" : "加药.2#球阀指示",
+  "valve2StopStatus": "加药.2#关到位",
+  "dosingPressure": "加药.加药压力",
+  "dosingLiquidLevel": "加药.加药液位"
+
 }

@@ -21,7 +21,9 @@ public class MessageRespnser<T> {
 
 
     //接口请求未成功
-
+    public static <T> MessageRespnser<T> unsuccess(T data){
+        return new MessageRespnser<T>(HttpStatus.BAD_REQUEST.value(), "bad", data);
+    }
 
     public Integer getCode() {
         return code;

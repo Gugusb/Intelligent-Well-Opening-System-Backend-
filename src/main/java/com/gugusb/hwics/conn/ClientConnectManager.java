@@ -31,5 +31,4 @@ public interface ClientConnectManager {
     }
 
     DFPMix run(OpcUaClient client, CompletableFuture<OpcUaClient> future) throws Exception;
-
 }

@@ -1,3 +1,20 @@
 {
-  
+  "pressureAlarm": "加药.加药后端报警压力",
+  "pressureRecovery": "加药.加药后端恢复压力",
+  "lowLevelWarning": "加药.低液位警告值",
+  "highLevelWarning": "加药.高液位警告值",
+  "lowLevelAlarm": "加药.低液位报警值",
+  "highLevelAlarm": "加药.低液位恢复值",
+  "firstDosingStartHour": "加药.时间1-启动时",
+  "firstDosingStartMinute" : "加药.时间1-启动分",
+  "firstDosingStopHour" : "加药.时间1-停止时",
+  "firstDosingStopMinute" : "加药.时间1-停止分",
+  "secondDosingStartHour": "加药.时间2-启动时",
+  "secondDosingStartMinute": "加药.时间2-启动分",
+  "secondDosingStopHour": "加药.时间2-停止时",
+  "secondDosingStopMinute": "加药.时间2-停止分",
+  "thirdDosingStartHour": "加药.时间3-启动时",
+  "thirdDosingStartMinute": "加药.时间3-启动分",
+  "thirdDosingStopHour": "加药.时间3-停止时",
+  "thirdDosingStopMinute": "加药.时间3-停止分"
 }

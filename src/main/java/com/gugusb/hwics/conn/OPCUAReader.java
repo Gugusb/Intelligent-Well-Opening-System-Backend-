@@ -110,6 +110,7 @@ public class OPCUAReader implements ClientConnectManager{
             try {
                 // 构建节点ID并读取值
                 NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
 
@@ -131,7 +132,7 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0")){
+                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
@@ -184,7 +185,7 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0")){
+                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
@@ -237,7 +238,7 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0")){
+                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
@@ -290,7 +291,7 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0")){
+                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
@@ -316,6 +317,7 @@ public class OPCUAReader implements ClientConnectManager{
         dfpMix.setDfp3(storeDPF3(client));
         dfpMix.setDfp4(storeDPF4(client));
         dfpMix.setDfp5(storeDPF5(client));
+        dfpMix.setSucceed(true);
 
         // synchronous read request via VariableNode
         UaVariableNode node = client.getAddressSpace().getVariableNode(Identifiers.Server_ServerStatus_StartTime);
@@ -336,6 +338,7 @@ public class OPCUAReader implements ClientConnectManager{
 
         return dfpMix;
     }
+
 
     private CompletableFuture<List<DataValue>> readServerStateAndTime(OpcUaClient client) {
         List<NodeId> nodeIds = ImmutableList.of(
