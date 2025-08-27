@@ -1,20 +1,14 @@
 package com.gugusb.hwics.service;
 
-import com.gugusb.hwics.exception.ExceptionAdvice;
 import com.gugusb.hwics.mapper.UserMapper;
 import com.gugusb.hwics.pojo.User;
 import com.gugusb.hwics.pojo.dto.UserDTO;
 import com.gugusb.hwics.service.Interface.IUserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @Service
@@ -23,29 +17,17 @@ public class UserService implements IUserService {
     @Autowired
     UserMapper userMapper;
 
-    //测试定时方法
-//    @Retryable(value = {DataAccessException.class},
-//            maxAttempts = 3,
-//            backoff = @Backoff(delay = 5000))
-//    @Scheduled(fixedRateString = "${user.update.interval:10000}")
-//    public void periodicUserUpdate() {
-//        try {
-//            User userPojo = new User();
-//            userPojo.setUserName("newUser");
-//            userMapper.save(userPojo);
-//            System.out.println("addUser succeed");
-//        } catch (Exception ex) {
-//            Logger log = LoggerFactory.getLogger(ExceptionAdvice.class);
-//            log.error("用户更新失败", ex);
-//            throw ex; // 触发重试机制
-//        }
-//    }
-
     @Override
-    public User add(UserDTO user) {
+    public Boolean add(UserDTO user) {
         User userPojo = new User();
-        BeanUtils.copyProperties(user, userPojo);
-        return userMapper.save(userPojo);
+        userPojo.setUserName(user.getUserName());
+        userPojo.setPassword(user.getPassword());
+        Optional<User> opUser = userMapper.findByUserName(user.getUserName());
+        if(opUser.isEmpty()) {
+            userMapper.save(userPojo);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -65,5 +47,15 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(int userId) {
         userMapper.deleteById(userId);
+    }
+
+    @Override
+    public boolean login(UserDTO user) {
+        String userName = user.getUserName();
+        String password = user.getPassword();
+        Optional<User> opUser = userMapper.findByUserName(userName);
+        if(opUser.isEmpty()) {return false;}
+        User fdUser = opUser.get();
+        return userName.equals(fdUser.getUserName()) && password.equals(fdUser.getPassword());
     }
 }

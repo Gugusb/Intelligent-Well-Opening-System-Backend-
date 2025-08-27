@@ -19,10 +19,17 @@ public class MessageRespnser<T> {
         return new MessageRespnser<T>(HttpStatus.OK.value(), "success", data);
     }
 
+    public static <T> MessageRespnser<T> success(T data, String message){
+        return new MessageRespnser<T>(HttpStatus.OK.value(), message, data);
+    }
 
     //接口请求未成功
     public static <T> MessageRespnser<T> unsuccess(T data){
         return new MessageRespnser<T>(HttpStatus.BAD_REQUEST.value(), "bad", data);
+    }
+
+    public static <T> MessageRespnser<T> unsuccess(T data, String message){
+        return new MessageRespnser<T>(HttpStatus.BAD_REQUEST.value(), message, data);
     }
 
     public Integer getCode() {

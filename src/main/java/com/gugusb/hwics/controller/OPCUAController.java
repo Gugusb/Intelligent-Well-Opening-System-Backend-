@@ -8,6 +8,8 @@ import com.gugusb.hwics.utils.MessageRespnser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.CompletableFuture;
+
 @RestController
 @RequestMapping("/opcua")
 public class OPCUAController {
@@ -31,10 +33,18 @@ public class OPCUAController {
             default -> false;
         };
         if(!result){
-            MessageRespnser.unsuccess("bad");
+            return MessageRespnser.unsuccess("bad");
         }else{
-            System.out.println("成功更新数据 开始读取数据");
-            opcuaService.readPageData();
+            // 异步执行读取操作
+            CompletableFuture.runAsync(() -> {
+                System.out.println("开始异步读取数据");
+                try {
+                    opcuaService.readPageData();
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println("异步读取完成");
+            });
         }
         return MessageRespnser.success("ok");
     }

@@ -323,16 +323,10 @@ public class OPCUAReader implements ClientConnectManager{
         UaVariableNode node = client.getAddressSpace().getVariableNode(Identifiers.Server_ServerStatus_StartTime);
         DataValue value = node.readValue();
 
-        logger.info("StartTime={}", value.getValue().getValue());
-
         // asynchronous read request
         readServerStateAndTime(client).thenAccept(values -> {
             DataValue v0 = values.get(0);
             DataValue v1 = values.get(1);
-
-            logger.info("State={}", ServerState.from((Integer) v0.getValue().getValue()));
-            logger.info("CurrentTime={}", v1.getValue().getValue());
-
             future.complete(client);
         });
 
