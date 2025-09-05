@@ -40,6 +40,11 @@ public class GasLiftSystem {
         return craftParameterDic.get(craftid);
     }
 
+    public static String checkStartupConditions(ProductionParameter productionParameter){
+
+        return "";
+    }
+
 
     @Override
     public String toString() {

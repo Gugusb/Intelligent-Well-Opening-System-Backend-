@@ -49,7 +49,7 @@ public class SmartMonitor {
         spawnLogQuickly("系统启动！");
     }
 
-    //生产并打印日志
+    // 生产并打印日志
     public ProductionLog spawnLog(){
         ProductionLog productionLog = new ProductionLog();
         return productionLog;
@@ -61,7 +61,7 @@ public class SmartMonitor {
         return productionLog;
     }
 
-    // 更细生产参数
+    // 更新生产参数
     public void updateProductionData(Integer gasProduction, Integer waterProduction, Integer oilPressure, Integer casingPressure){
         this.gasProduction = gasProduction;
         this.waterProduction = waterProduction;
@@ -69,7 +69,7 @@ public class SmartMonitor {
         this.casingPressure = casingPressure;
     }
 
-    //持久方法
+    // 持久方法
     public void run(){
 
     }
