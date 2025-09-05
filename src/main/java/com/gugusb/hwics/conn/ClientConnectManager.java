@@ -23,7 +23,7 @@ public interface ClientConnectManager {
     }
 
     default SecurityPolicy getSecurityPolicy() {
-        return SecurityPolicy.Basic256Sha256;
+        return SecurityPolicy.Basic256;
     }
 
     default IdentityProvider getIdentityProvider() {

@@ -7,6 +7,15 @@ public class DFPMix {
     private DFP4 dfp4;
     private DFP5 dfp5;
     private Boolean succeed;
+    private DataCheckResult dataCheckResult;
+
+    public DataCheckResult getDataCheckResult() {
+        return dataCheckResult;
+    }
+
+    public void setDataCheckResult(DataCheckResult dataCheckResult) {
+        this.dataCheckResult = dataCheckResult;
+    }
 
     @Override
     public String toString() {
@@ -17,6 +26,7 @@ public class DFPMix {
                 ", dfp4=" + dfp4 +
                 ", dfp5=" + dfp5 +
                 ", succeed=" + succeed +
+                ", dataCheckResult=" + dataCheckResult +
                 '}';
     }
 

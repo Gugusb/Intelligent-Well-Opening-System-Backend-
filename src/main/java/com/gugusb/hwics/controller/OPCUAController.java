@@ -2,6 +2,7 @@ package com.gugusb.hwics.controller;
 
 import com.gugusb.hwics.conn.ClientConnectManagerRunner;
 import com.gugusb.hwics.conn.OPCUAReader;
+import com.gugusb.hwics.pojo.DataCheckResult;
 import com.gugusb.hwics.pojo.dto.WriterDTO;
 import com.gugusb.hwics.service.OpcuaService;
 import com.gugusb.hwics.utils.MessageRespnser;
@@ -16,6 +17,11 @@ public class OPCUAController {
 
     @Autowired
     OpcuaService opcuaService;
+
+    @GetMapping("/checkdata")
+    public MessageRespnser<DataCheckResult> checkData() throws Exception {
+        return MessageRespnser.success(opcuaService.checkPageData());
+    }
 
     @GetMapping("/updatedata")
     public MessageRespnser<String> updateData() throws Exception {

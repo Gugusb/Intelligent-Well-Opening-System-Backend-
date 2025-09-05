@@ -4,14 +4,17 @@ import com.gugusb.hwics.pojo.DFPMix;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.api.identity.UsernameProvider;
+import org.eclipse.milo.opcua.stack.client.DiscoveryClient;
 import org.eclipse.milo.opcua.stack.core.Stack;
 import org.eclipse.milo.opcua.stack.core.types.builtin.LocalizedText;
+import org.eclipse.milo.opcua.stack.core.types.structured.EndpointDescription;
 import org.eclipse.milo.opcua.stack.core.util.EndpointUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.security.Security;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -56,10 +59,10 @@ public class ClientConnectManagerRunner {
                         configBuilder
                                 .setApplicationName(LocalizedText.english("eclipse milo opc-ua client"))
                                 .setApplicationUri("urn:eclipse:milo:examples:client")
-                    .setKeyPair(loader.getClientKeyPair()) // 密钥对
-                    .setCertificate(loader.getClientCertificate()) // 证书
-                    .setCertificateChain(loader.getClientCertificateChain()) // 证书信任链
-//                    .setCertificateValidator(certificateValidator) // 验证证书
+                                .setKeyPair(loader.getClientKeyPair()) // 密钥对
+                                .setCertificate(loader.getClientCertificate()) // 证书
+                                .setCertificateChain(loader.getClientCertificateChain()) // 证书信任链
+            //                    .setCertificateValidator(certificateValidator) // 验证证书
                                 .setIdentityProvider(clientExample.getIdentityProvider())
                                 .setRequestTimeout(uint(5000))
                                 .build()
