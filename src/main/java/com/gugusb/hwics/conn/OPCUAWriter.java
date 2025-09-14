@@ -35,6 +35,11 @@ public class OPCUAWriter implements ClientConnectManager {
         System.out.println(place);
     }
 
+//    public OPCUAWriter(Word data, String place) {
+//        this.v = new Variant(data);
+//        this.place = place;
+//    }
+
     public OPCUAWriter(Short data, String place) {
         this.v = new Variant(data);
         this.place = place;

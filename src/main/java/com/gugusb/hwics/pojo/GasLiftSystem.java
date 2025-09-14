@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 @Entity
-@Table(name = "tb_smf_system")
+@Table(name = "tb_gl_system")
 public class GasLiftSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +39,6 @@ public class GasLiftSystem {
     public static String getCraftParameter(Integer craftid){
         return craftParameterDic.get(craftid);
     }
-
-    public static String checkStartupConditions(ProductionParameter productionParameter){
-
-        return "";
-    }
-
 
     @Override
     public String toString() {

@@ -81,7 +81,7 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp1, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0")){
+                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
                         field.set(dfp1, false);
                     }else
                         field.set(dfp1, true);

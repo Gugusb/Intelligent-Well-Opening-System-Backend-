@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 @Entity
-@Table(name = "tb_smf_system")
+@Table(name = "product_log")
 public class ProductionLog {
 
     @Id

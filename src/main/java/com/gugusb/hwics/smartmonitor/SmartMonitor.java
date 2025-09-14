@@ -1,51 +1,33 @@
 package com.gugusb.hwics.smartmonitor;
 
-import com.gugusb.hwics.pojo.FoamDrainageSystem;
-import com.gugusb.hwics.pojo.GasLiftSystem;
-import com.gugusb.hwics.pojo.ProductionLog;
-import com.gugusb.hwics.pojo.SuctionMixedFlowSystem;
-import jakarta.persistence.criteria.CriteriaBuilder;
+import com.gugusb.hwics.pojo.*;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SmartMonitor {
+@Service
+public class SmartMonitor{
     private Boolean SMFState;   //抽吸混输
     private Boolean PDState;    //泡排
     private Boolean GLState;    //气举
 
-    private Integer gasProduction;
-    private Integer waterProduction;
-    private Integer oilPressure;
-    private Integer casingPressure;
+    private Float gasProduction;
+    private Float waterProduction;
+    private Float oilPressure;
+    private Float casingPressure;
 
     private List<ProductionLog> productionLogs;
 
-    private FoamDrainageSystem foamDrainageSystem;
-    private GasLiftSystem gasLiftSystem;
-    private SuctionMixedFlowSystem suctionMixedFlowSystem;
-
-    public SmartMonitor(Integer gasProduction, Integer waterProduction, Integer oilPressure, Integer casingPressure) {
+    public void initSystem(ProductionParameter parameter) {
         SMFState = Boolean.FALSE;
         PDState = Boolean.FALSE;
         GLState = Boolean.FALSE;
 
-        updateProductionData(gasProduction, waterProduction, oilPressure, casingPressure);
+        updateProductionData(parameter);
 
         productionLogs = new ArrayList<ProductionLog>();
 
-        foamDrainageSystem = new FoamDrainageSystem();
-        gasLiftSystem = new GasLiftSystem();
-        suctionMixedFlowSystem = new SuctionMixedFlowSystem();
-    }
-
-    // 系统初始化
-    public void initSystem(){
-        // 打印系统初始化的log
-        spawnLogQuickly("系统启动！");
-        // 根据生产参数确定机器的开启情况
-
-        // 打印机器开启log
         spawnLogQuickly("系统启动！");
     }
 
@@ -62,16 +44,16 @@ public class SmartMonitor {
     }
 
     // 更新生产参数
-    public void updateProductionData(Integer gasProduction, Integer waterProduction, Integer oilPressure, Integer casingPressure){
-        this.gasProduction = gasProduction;
-        this.waterProduction = waterProduction;
-        this.oilPressure = oilPressure;
-        this.casingPressure = casingPressure;
+    public void updateProductionData(ProductionParameter parameter){
+        this.gasProduction = parameter.getGasProduction();
+        this.waterProduction = parameter.getWaterProduction();
+        this.oilPressure = parameter.getOilPressure();
+        this.casingPressure = parameter.getCasingPressure();
     }
 
     // 持久方法
     public void run(){
-
+        // 阶段转换执行方法
     }
 
     @Override
@@ -85,9 +67,6 @@ public class SmartMonitor {
                 ", oilPressure=" + oilPressure +
                 ", casingPressure=" + casingPressure +
                 ", productionLogs=" + productionLogs +
-                ", foamDrainageSystem=" + foamDrainageSystem +
-                ", gasLiftSystem=" + gasLiftSystem +
-                ", suctionMixedFlowSystem=" + suctionMixedFlowSystem +
                 '}';
     }
 
@@ -115,35 +94,35 @@ public class SmartMonitor {
         this.GLState = GLState;
     }
 
-    public Integer getGasProduction() {
+    public Float getGasProduction() {
         return gasProduction;
     }
 
-    public void setGasProduction(Integer gasProduction) {
+    public void setGasProduction(Float gasProduction) {
         this.gasProduction = gasProduction;
     }
 
-    public Integer getWaterProduction() {
+    public Float getWaterProduction() {
         return waterProduction;
     }
 
-    public void setWaterProduction(Integer waterProduction) {
+    public void setWaterProduction(Float waterProduction) {
         this.waterProduction = waterProduction;
     }
 
-    public Integer getOilPressure() {
+    public Float getOilPressure() {
         return oilPressure;
     }
 
-    public void setOilPressure(Integer oilPressure) {
+    public void setOilPressure(Float oilPressure) {
         this.oilPressure = oilPressure;
     }
 
-    public Integer getCasingPressure() {
+    public Float getCasingPressure() {
         return casingPressure;
     }
 
-    public void setCasingPressure(Integer casingPressure) {
+    public void setCasingPressure(Float casingPressure) {
         this.casingPressure = casingPressure;
     }
 
@@ -153,29 +132,5 @@ public class SmartMonitor {
 
     public void setProductionLogs(List<ProductionLog> productionLogs) {
         this.productionLogs = productionLogs;
-    }
-
-    public FoamDrainageSystem getFoamDrainageSystem() {
-        return foamDrainageSystem;
-    }
-
-    public void setFoamDrainageSystem(FoamDrainageSystem foamDrainageSystem) {
-        this.foamDrainageSystem = foamDrainageSystem;
-    }
-
-    public GasLiftSystem getGasLiftSystem() {
-        return gasLiftSystem;
-    }
-
-    public void setGasLiftSystem(GasLiftSystem gasLiftSystem) {
-        this.gasLiftSystem = gasLiftSystem;
-    }
-
-    public SuctionMixedFlowSystem getSuctionMixedFlowSystem() {
-        return suctionMixedFlowSystem;
-    }
-
-    public void setSuctionMixedFlowSystem(SuctionMixedFlowSystem suctionMixedFlowSystem) {
-        this.suctionMixedFlowSystem = suctionMixedFlowSystem;
     }
 }
