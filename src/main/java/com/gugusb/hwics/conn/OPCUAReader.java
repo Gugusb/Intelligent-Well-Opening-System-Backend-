@@ -41,7 +41,16 @@ import javax.json.JsonReader;
 public class OPCUAReader implements ClientConnectManager{
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final String channelName = "gugu通道1.";
+    private final String channelName = "gugu通道2.";
+    private final boolean isTest = false;
+
+    private void testPrint(String s){
+        if(isTest) System.out.println(s);
+    }
+
+    private void testErr(String s){
+        if(isTest) System.err.println(s);
+    }
 
     private DFP1 storeDPF1(OpcUaClient client) throws Exception {
         // 1. 从classpath加载JSON映射文件
@@ -59,7 +68,7 @@ public class OPCUAReader implements ClientConnectManager{
 
             try {
                 // 构建节点ID并读取值
-                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                NodeId nodeId = new NodeId(2, channelName + tag);
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
 
@@ -81,18 +90,19 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp1, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
                         field.set(dfp1, false);
                     }else
                         field.set(dfp1, true);
                 }
                 // 添加其他类型处理...
+                testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
-                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
         dfp1.fixData();
-        System.out.println("Page1数据更新完成");
+        testPrint("=========Page1数据更新完成========");
         return dfp1;
     }
 
@@ -112,7 +122,7 @@ public class OPCUAReader implements ClientConnectManager{
 
             try {
                 // 构建节点ID并读取值
-                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                NodeId nodeId = new NodeId(2, channelName + tag);
 
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
@@ -135,18 +145,19 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
+                testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
-                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
         dfp2.fixData();
-        System.out.println("Page2数据更新完成");
+        testPrint("========Page2数据更新完成=========");
         return dfp2;
     }
 
@@ -166,7 +177,7 @@ public class OPCUAReader implements ClientConnectManager{
 
             try {
                 // 构建节点ID并读取值
-                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                NodeId nodeId = new NodeId(2, channelName + tag);
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
 
@@ -188,18 +199,19 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
+                testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
-                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
         dfp2.fixData();
-        System.out.println("Page3数据更新完成");
+        testPrint("========Page3数据更新完成========");
         return dfp2;
     }
 
@@ -219,7 +231,7 @@ public class OPCUAReader implements ClientConnectManager{
 
             try {
                 // 构建节点ID并读取值
-                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                NodeId nodeId = new NodeId(2, channelName + tag);
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
 
@@ -241,18 +253,19 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
+                testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
-                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
         dfp2.fixData();
-        System.out.println("Page4数据更新完成");
+        testPrint("========Page4数据更新完成========");
         return dfp2;
     }
 
@@ -272,7 +285,7 @@ public class OPCUAReader implements ClientConnectManager{
 
             try {
                 // 构建节点ID并读取值
-                NodeId nodeId = new NodeId(2, "gugu通道1." + tag);
+                NodeId nodeId = new NodeId(2, channelName + tag);
                 DataValue dataValue = client.readValue(0.0, TimestampsToReturn.Both, nodeId).get();
                 Object value = dataValue.getValue().getValue();
 
@@ -294,18 +307,19 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp2, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
                         field.set(dfp2, false);
                     }else
                         field.set(dfp2, true);
                 }
                 // 添加其他类型处理...
+                testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
-                System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
         dfp2.fixData();
-        System.out.println("Page5数据更新完成");
+        testPrint("========Page5数据更新完成========");
         return dfp2;
     }
 

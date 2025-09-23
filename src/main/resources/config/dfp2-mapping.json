@@ -1,39 +1,39 @@
 {
-  "unit1StartHour": "混输气举撬123.1#机启动-小时",
-  "unit1StartMinute":"混输气举撬123.1#机启动-分钟",
+  "unit1StartHour": "混输气举撬123-3.1#机启动-小时",
+  "unit1StartMinute":"混输气举撬123-3.1#机启动-分钟",
 
-  "unit1StopHour": "混输气举撬123.1#机停止-小时",
-  "unit1StopMinute": "混输气举撬123.1#机停止-分钟",
+  "unit1StopHour": "混输气举撬123-3.1#机停止-小时",
+  "unit1StopMinute": "混输气举撬123-3.1#机停止-分钟",
 
-  "unit1StartPressure": "混输气举撬123.1#机启动压力",
-  "unit1StopPressure": "混输气举撬123.1#机停止压力",
+  "unit1StartPressure": "混输气举撬123-3.1#机启动压力",
+  "unit1StopPressure": "混输气举撬123-3.1#机停止压力",
 
-  "unit1LeftValveTime": "混输气举撬123.1#左阀时间",
-  "unit1RightValveTime":"混输气举撬123.1#右阀时间",
+  "unit1LeftValveTime": "混输气举撬123-3.1#左阀时间",
+  "unit1RightValveTime":"混输气举撬123-3.1#右阀时间",
 
-  "unit2StartHour": "混输气举撬123.2#机启动-小时",
-  "unit2StartMinute": "混输气举撬123.2#机启动-分钟",
+  "unit2StartHour": "混输气举撬123-3.2#机启动-小时",
+  "unit2StartMinute": "混输气举撬123-3.2#机启动-分钟",
 
-  "unit2StopHour": "混输气举撬123.2#机停止-小时",
-  "unit2StopMinute": "混输气举撬123.2#机停止-分钟",
+  "unit2StopHour": "混输气举撬123-3.2#机停止-小时",
+  "unit2StopMinute": "混输气举撬123-3.2#机停止-分钟",
 
-  "unit2StartPressure": "混输气举撬123.2#机启动压力",
-  "unit2StopPressure" : "混输气举撬123.2#机停止压力",
+  "unit2StartPressure": "混输气举撬123-3.2#机启动压力",
+  "unit2StopPressure" : "混输气举撬123-3.2#机停止压力",
 
-  "unit2LeftValveTime":"混输气举撬123.2#左阀时间",
-  "unit2RightValveTime":"混输气举撬123.2#右阀时间",
+  "unit2LeftValveTime":"混输气举撬123-3.2#左阀时间",
+  "unit2RightValveTime":"混输气举撬123-3.2#右阀时间",
 
-  "unit3StartHour": "混输气举撬123.3#机启动-小时",
-  "unit3StartMinute": "混输气举撬123.3#机启动-分钟",
+  "unit3StartHour": "混输气举撬123-3.3#机启动-小时",
+  "unit3StartMinute": "混输气举撬123-3.3#机启动-分钟",
 
-  "unit3StopHour": "混输气举撬123.3#机停止-小时",
-  "unit3StopMinute": "混输气举撬123.3#机停止-分钟",
+  "unit3StopHour": "混输气举撬123-3.3#机停止-小时",
+  "unit3StopMinute": "混输气举撬123-3.3#机停止-分钟",
 
-  "unit3StartPressure": "混输气举撬123.3#机启动压力",
-  "unit3StopPressure" : "混输气举撬123.3#机停止压力",
+  "unit3StartPressure": "混输气举撬123-3.3#机启动压力",
+  "unit3StopPressure" : "混输气举撬123-3.3#机停止压力",
 
-  "unit3LeftValveTime": "混输气举撬123.3#左阀时间",
-  "unit3RightValveTime" : "混输气举撬123.3#右阀时间",
+  "unit3LeftValveTime": "混输气举撬123-3.3#左阀时间",
+  "unit3RightValveTime" : "混输气举撬123-3.3#右阀时间",
 
   "unit4StartHour" : "混输气举撬456.4#机启动-小时",
   "unit4StartMinute" : "混输气举撬456.4#机启动-分钟",

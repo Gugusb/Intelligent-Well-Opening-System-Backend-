@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 public class OPCUAChecker implements ClientConnectManager{
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
-    private final String channelName = "gugu通道1.";
+    private final String channelName = "gugu通道2.";
 
     private DataCheckResult checkDPFs(OpcUaClient client) throws Exception {
         // 0. 建立返回列表
