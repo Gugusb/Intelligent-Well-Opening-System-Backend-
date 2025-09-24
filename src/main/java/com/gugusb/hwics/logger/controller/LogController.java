@@ -56,21 +56,21 @@ public class LogController {
         foamingDetails.put("param1", "value1");
         foamingDetails.put("param2", 123);
         logService.logProcessEvent(ProcessType.FOAMING, EventType.START,
-                "泡排工艺启动", foamingDetails);
+                "泡排工艺启动", foamingDetails, 1);
 
         // 创建气举工艺警告日志
         Map<String, Object> gasLiftDetails = new HashMap<>();
         gasLiftDetails.put("pressure", 25.5);
         gasLiftDetails.put("flowRate", 30.2);
         logService.logProcessEvent(ProcessType.GAS_LIFT, EventType.WARNING,
-                "气举压力异常", gasLiftDetails);
+                "气举压力异常", gasLiftDetails, 1);
 
         // 创建系统错误日志
         Map<String, Object> systemDetails = new HashMap<>();
         systemDetails.put("errorCode", "E1001");
         systemDetails.put("component", "数据采集模块");
         logService.logSystemEvent(EventType.ERROR,
-                "数据采集失败", systemDetails);
+                "数据采集失败", systemDetails, 1);
 
         return "三种示例日志已创建";
     }

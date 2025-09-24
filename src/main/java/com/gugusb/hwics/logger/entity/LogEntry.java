@@ -28,6 +28,9 @@ public class LogEntry {
     @Column(nullable = false, length = 500)
     private String message;
 
+    @Column
+    private Integer systemStateId;
+
     @Convert(converter = HashMapConverter.class)
     @Column(columnDefinition = "JSON")
     private Map<String, Object> details;
@@ -36,15 +39,25 @@ public class LogEntry {
     public LogEntry() {}
 
     public LogEntry(LocalDateTime timestamp, ProcessType processType,
-                    EventType eventType, String message, Map<String, Object> details) {
+                    EventType eventType, String message, Map<String, Object> details, Integer systemStateId) {
         this.timestamp = timestamp;
         this.processType = processType;
         this.eventType = eventType;
         this.message = message;
         this.details = details;
+        this.systemStateId = systemStateId;
     }
 
     // Getters and Setters
+
+    public Integer getSystemStateId() {
+        return systemStateId;
+    }
+
+    public void setSystemStateId(Integer systemStateId) {
+        this.systemStateId = systemStateId;
+    }
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

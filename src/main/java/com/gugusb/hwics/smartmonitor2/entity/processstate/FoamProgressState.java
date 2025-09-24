@@ -1,10 +1,13 @@
 package com.gugusb.hwics.smartmonitor2.entity.processstate;
 
+import com.gugusb.hwics.smartmonitor2.entity.FoamParams;
+import com.gugusb.hwics.utils.DateSpawner;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "tb_foam_state")
@@ -28,27 +31,39 @@ public class FoamProgressState {
     @Column(name = "last_duration")
     private Duration lastDuration;
 
+    @Column(name = "last_duration_second")
+    private Long lastDurationSecond;
+
+    // 工艺参数
+    @Column
+    @Embedded
+    private FoamParams foamParams;
+
     public void fillAsEntity(){
-        this.updateTime = new Timestamp(System.currentTimeMillis());
+        this.updateTime = DateSpawner.getLocalTimestamp();
     }
 
     public FoamProgressState() {
         this.running = false;
         this.lastDuration = Duration.ZERO;
+        this.lastDurationSecond = (long) 0;
     }
 
     /**
      * 标记工艺开始
      */
-    public void start() {
+    public void start(FoamParams foamParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
+        this.foamParams = foamParams;
     }
 
-    public void start(Duration duration) {
+    public void start(Duration duration, FoamParams foamParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
         this.lastDuration = duration;
+        this.lastDurationSecond = duration.toSeconds();
+        this.foamParams = foamParams;
     }
 
     /**
@@ -80,7 +95,25 @@ public class FoamProgressState {
                 ", running=" + running +
                 ", lastStartTime=" + lastStartTime +
                 ", lastDuration=" + lastDuration +
+                ", lastDurationSecond=" + lastDurationSecond +
+                ", foamParams=" + foamParams +
                 '}';
+    }
+
+    public Long getLastDurationSecond() {
+        return lastDurationSecond;
+    }
+
+    public void setLastDurationSecond(Long lastDurationSecond) {
+        this.lastDurationSecond = lastDurationSecond;
+    }
+
+    public FoamParams getFoamParams() {
+        return foamParams;
+    }
+
+    public void setFoamParams(FoamParams foamParams) {
+        this.foamParams = foamParams;
     }
 
     public Integer getDataId() {

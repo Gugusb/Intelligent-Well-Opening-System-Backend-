@@ -52,6 +52,7 @@ public class ProcessController {
 
     private SystemState systemState;
 
+    private Integer startTag = 0;
     Scheduler scheduler = new Scheduler(10);
     /**
      * 阶段0：系统未启动
@@ -85,30 +86,32 @@ public class ProcessController {
         if(isInit){
             systemState = new SystemState();
             systemState.initState();
-            logService.logSystemEvent(EventType.START, "开始初始化系统状态。");
+            systemState.fillAsEntity();
+            systemState = systemStateMapper.save(systemState);
+            logService.logSystemEvent(EventType.START, "开始初始化系统状态。", systemState.getDataId());
         }else{
             //系统状态恢复
             this.systemState = systemStateMapper.findFirstByOrderByDataIdDesc().get();
-            logService.logSystemEvent(EventType.WARNING, "检测到上次系统意外终止，正在尝试恢复上次的系统状态。");
+            logService.logSystemEvent(EventType.WARNING, "检测到上次系统意外终止，正在尝试恢复上次的系统状态。", systemState.getDataId());
         }
 
         //工艺状态恢复
         if(gasLiftPSMapper.count() > 0){
             if(!gasLiftPSMapper.findFirstByOrderByDataIdDesc().isEmpty()){
                 this.gasLiftState = gasLiftPSMapper.findFirstByOrderByDataIdDesc().get();
-                logService.logSystemEvent(EventType.PARAM_CHANGE, "气举系统数据恢复。");
+                logService.logSystemEvent(EventType.PARAM_CHANGE, "气举系统数据恢复。", systemState.getDataId());
             }
         }
         if(pumpPSMapper.count() > 0){
             if(!pumpPSMapper.findFirstByOrderByDataIdDesc().isEmpty()){
                 this.pumpState = pumpPSMapper.findFirstByOrderByDataIdDesc().get();
-                logService.logSystemEvent(EventType.PARAM_CHANGE, "抽汲系统数据恢复。");
+                logService.logSystemEvent(EventType.PARAM_CHANGE, "抽汲系统数据恢复。", systemState.getDataId());
             }
         }
         if(foamPSMapper.count() > 0){
             if(!foamPSMapper.findFirstByOrderByDataIdDesc().isEmpty()){
                 this.foamState = foamPSMapper.findFirstByOrderByDataIdDesc().get();
-                logService.logSystemEvent(EventType.PARAM_CHANGE, "泡排系统数据恢复。");
+                logService.logSystemEvent(EventType.PARAM_CHANGE, "泡排系统数据恢复。", systemState.getDataId());
             }
         }
         checkAll();
@@ -118,7 +121,8 @@ public class ProcessController {
     public boolean editParams(WellParams wellParams){
         if(systemState.isSystemRunning()){
             this.systemState.setWellParams(wellParams);
-            logService.logSystemEvent(EventType.PARAM_CHANGE, "气井数据修改完成。");
+            storeSystemState();
+            logService.logSystemEvent(EventType.PARAM_CHANGE, "气井数据修改完成。", systemState.getDataId());
             return true;
         }
         return false;
@@ -126,27 +130,37 @@ public class ProcessController {
 
     // 开启系统并开始自检（阶段0-1）
     public boolean startSystemCheck(){
+        boolean checkres = false;
         if(systemState.getSystemStage() == 0){
             systemState.setSystemRunning(true);
             systemState.setSystemStage(1);
             storeSystemState();
-            logService.logSystemEvent(EventType.START, "智能系统开始启动！即将进行系统自检。");
+            logService.logSystemEvent(EventType.START, "智能系统开始启动！即将进行系统自检。", systemState.getDataId());
         }
         if(systemState.getSystemStage() == 1){
-            logService.logSystemEvent(EventType.START, "系统自检中...");
+            logService.logSystemEvent(EventType.START, "系统自检中...", systemState.getDataId());
             double checkResult = deviceManager.checkAllTags();
-            if(checkResult > 0.95){
+            if(checkResult > 0.1){
                 systemState.setSystemStage(2);
                 storeSystemState();
-                logService.logSystemEvent(EventType.START, "智能系统自检成功！成功率：" + checkResult * 100 + "%");
-                return true;
+                logService.logSystemEvent(EventType.START, "智能系统自检成功！", systemState.getDataId());
+                checkres = true;
             }
         }
-        return false;
+        if(systemState.getSystemStage() > 1){
+            logService.logSystemEvent(EventType.START, "系统自检中...", systemState.getDataId());
+            double checkResult = deviceManager.checkAllTags();
+            if(checkResult > 0.1){
+              checkres = true;
+            }
+        }
+        return checkres;
     }
 
     // 启动系统的后续工艺（阶段2-6）
     public void startSystemProcess(WellParams wellParams) {
+        if(startTag == 1)return;
+        startTag = 1;
         if(systemState.getSystemStage() <= 1)return;
         if(!systemState.isSystemRunning())return;
 
@@ -155,7 +169,7 @@ public class ProcessController {
             systemState.setWellParams(wellParams);
             systemState.setSystemStage(3);
             storeSystemState();
-            logService.logSystemEvent(EventType.PARAM_CHANGE, "气井数据输入完成。");
+            logService.logSystemEvent(EventType.PARAM_CHANGE, "气井数据输入完成。", systemState.getDataId());
         }
 
         // 每分钟检测/存储一次所有设备的状态(全阶段操作)
@@ -294,7 +308,7 @@ public class ProcessController {
         // 创建新的计时器
         this.scheduler = new Scheduler(10);
         // 工艺状态保存(不做修改)
-        logService.logProcessEvent(ProcessType.SYSTEM, EventType.END, "系统已经关闭", null);
+        logService.logProcessEvent(ProcessType.SYSTEM, EventType.END, "系统已经关闭", null, systemState.getDataId());
         return true;
     }
 
@@ -310,17 +324,18 @@ public class ProcessController {
      * 首次尝试开启泡排
      */
     private void firstStartFoam(){
+        // 计算工艺参数
         ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
         FoamParams calcFoamParams = ParamManager.computeFoamParams(systemState.getWellParams(), snapshot);
-        FoamParams defaultFoamParams = ParamManager.defaultFoamParams();
-        //选择默认/计算得到的参数
-        FoamParams selectedFoamParams = defaultFoamParams;
-        foamProcess.startWithParams(selectedFoamParams);
-        foamState.start(Duration.ofSeconds((long)selectedFoamParams.getInjectionTime()));
+        // 存储工艺参数到状态
+        foamState.setFoamParams(calcFoamParams);
+        // 启动工艺
+        foamProcess.startWithParams(calcFoamParams);
+        foamState.start(Duration.ofSeconds((long)calcFoamParams.getInjectionTime()), calcFoamParams);
         // 强制存储状态一次
         storeAllState();
         logService.logProcessEvent(ProcessType.FOAMING, EventType.START,
-                "初始泡排工艺启动", selectedFoamParams.transToMap());
+                "初始泡排工艺启动", calcFoamParams.transToMap(), systemState.getDataId());
     }
 
     /**
@@ -330,10 +345,17 @@ public class ProcessController {
         System.out.println("=====抽吸状态监测=====");
         if(pumpState.isRunning())return;
         if (systemState.isSystemRunning()) {
+            // 计算工艺参数
+            ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
+            PumpParams calcFoamParams = ParamManager.computePumpParams(systemState.getWellParams(), snapshot);
+            Boolean isUserCompute = false;
+            // 存储对应的工艺参数到状态中
+            pumpState.setPumpParams(calcFoamParams);
+            // 开启对应工艺
             pumpingProcess.startWithParams(null); // 抽汲工艺无需参数
-            pumpState.start(Duration.ofSeconds((long)999999999));
+            pumpState.start(Duration.ofSeconds((long)999999999), calcFoamParams);
             logService.logProcessEvent(ProcessType.SWABBING, EventType.START,
-                    "抽汲工艺启动", null);
+                    "抽汲工艺启动", null, systemState.getDataId());
             // 强制存储状态一次
             checkAll();
         }
@@ -350,17 +372,18 @@ public class ProcessController {
         }
         if(gasLiftState.isRunning())return;
         if (systemState.isSystemRunning()) {
+            // 计算出工艺参数及开启条件
             ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
-            if (!gasLiftProcess.isInCooldown() && gasLiftProcess.canStart(snapshot)) {
-                GasLiftParams calcGasLiftParams = ParamManager.computeGasLiftParams(systemState.getWellParams(), snapshot);
-                GasLiftParams defaultGasLiftParams = ParamManager.defaultGasLiftParams();
-                GasLiftParams selectedGasLiftParams = defaultGasLiftParams;
+            GasLiftParams calcGasLiftParams = ParamManager.computeGasLiftParams(systemState.getWellParams(), snapshot);
+            // 存储工艺参数到工艺状态
+            gasLiftState.setGasLiftParams(calcGasLiftParams);
+            if (gasLiftProcess.canStart(snapshot, calcGasLiftParams)) {
+                gasLiftProcess.startWithParams(calcGasLiftParams);
 
-                gasLiftProcess.startWithParams(selectedGasLiftParams);
-                gasLiftState.start(Duration.ofSeconds((long)selectedGasLiftParams.getGasInjectionTime()));
+                gasLiftState.start(Duration.ofSeconds((long)calcGasLiftParams.getGasInjectionTime()), calcGasLiftParams);
 
                 logService.logProcessEvent(ProcessType.GAS_LIFT, EventType.START,
-                        "气举工艺启动", selectedGasLiftParams.transToMap());
+                        "气举工艺启动", calcGasLiftParams.transToMap(), systemState.getDataId());
                 // 强制存储状态一次
                 checkAll();
                 if (!systemState.isFirstGasLiftStarted()) {
@@ -377,16 +400,15 @@ public class ProcessController {
         System.out.println("=====泡排条件监测=====");
         if(foamState.isRunning())return;
         if (systemState.isSystemRunning()) {
+            // 计算工艺参数及启动条件
             ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
-            if (!foamProcess.isInCooldown() && foamProcess.canStart(snapshot)) {
-                FoamParams calcFoamParams = ParamManager.computeFoamParams(systemState.getWellParams(), snapshot);
-                FoamParams defaultFoamParams = ParamManager.defaultFoamParams();
-                FoamParams selectedFoamParams = defaultFoamParams;
-
-                foamProcess.startWithParams(selectedFoamParams);
-                foamState.start(Duration.ofSeconds((long)selectedFoamParams.getInjectionTime()));
+            FoamParams calcFoamParams = ParamManager.computeFoamParams(systemState.getWellParams(), snapshot);
+            if (foamProcess.canStart(snapshot, calcFoamParams)) {
+                // 启动工艺
+                foamProcess.startWithParams(calcFoamParams);
+                foamState.start(Duration.ofSeconds((long)calcFoamParams.getInjectionTime()), calcFoamParams);
                 logService.logProcessEvent(ProcessType.FOAMING, EventType.START,
-                        "泡排工艺启动", selectedFoamParams.transToMap());
+                        "泡排工艺启动", calcFoamParams.transToMap(), systemState.getDataId());
                 // 强制存储状态一次
                 checkAll();
             }
@@ -424,14 +446,28 @@ public class ProcessController {
     private void checkAll(){
         //检查设备是否关闭，如果关闭则更新state
         checkProcessState();
-        logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕");
+        logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕", systemState.getDataId());
 
         //存储所有的状态
         storeAllState();
-        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕");
+        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
     }
 
     public boolean isRunning() {
         return systemState.isSystemRunning();
+    }
+
+    public Integer getStartTag() {
+        return startTag;
+    }
+
+    public void setStartTag(Integer startTag) {
+        this.startTag = startTag;
+    }
+
+    public Integer getSystemId(){
+        if(systemState == null)return 0;
+        if(systemState.getDataId() == null)return 0;
+        return systemState.getDataId();
     }
 }

@@ -2,6 +2,7 @@ package com.gugusb.hwics.smartmonitor;
 
 import com.gugusb.hwics.pojo.ProductionParameter;
 import com.gugusb.hwics.pojo.WellParameter;
+import com.gugusb.hwics.utils.DateSpawner;
 import com.gugusb.hwics.utils.StageKey;
 import org.springframework.stereotype.Service;
 
@@ -48,8 +49,8 @@ public class StageManager {
     public void openWell(){
         mainStageId = 1;
         childStageId = 0;
-        mainStartTime = new Timestamp(System.currentTimeMillis());
-        childStartTime = new Timestamp(System.currentTimeMillis());
+        mainStartTime = DateSpawner.getLocalTimestamp();
+        childStartTime = DateSpawner.getLocalTimestamp();
         probationTime = 0;
         transProgress = new ArrayList<>();
         fomaTimes = 0;
@@ -61,10 +62,10 @@ public class StageManager {
 
         // 重置阶段时间
         if(!Objects.equals(tarMainStageId, mainStageId)){
-            this.mainStartTime = new Timestamp(System.currentTimeMillis());
+            this.mainStartTime = DateSpawner.getLocalTimestamp();
         }
         if(!Objects.equals(tarChildStageId, childStageId) || !Objects.equals(tarMainStageId, mainStageId)){
-            this.childStartTime = new Timestamp(System.currentTimeMillis());
+            this.childStartTime = DateSpawner.getLocalTimestamp();
         }
         // 重置阶段试用时间
         this.probationTime = StaticParameters.STAGE_PROBATION.get(new StageKey(mainStageId, childStageId));

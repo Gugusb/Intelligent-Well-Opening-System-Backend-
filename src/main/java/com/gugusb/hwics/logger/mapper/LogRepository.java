@@ -33,4 +33,11 @@ public interface LogRepository extends JpaRepository<LogEntry, Long> {
     Page<LogEntry> findAllByOrderByTimestampDesc(Pageable pageable);
 
     List<LogEntry> findAllByOrderByTimestampDesc();
+
+    List<LogEntry> findBySystemStateIdOrderByTimestampAsc(Integer systemStateId);
+
+    @Query(value = "SELECT * FROM log_entry WHERE system_state_id = :systemStateId AND timestamp >= DATE_SUB(NOW(), INTERVAL 1 MINUTE) ORDER BY timestamp ASC", nativeQuery = true)
+    List<LogEntry> findRecentBySystemStateIdNative(
+            @Param("systemStateId") Integer systemStateId
+    );
 }

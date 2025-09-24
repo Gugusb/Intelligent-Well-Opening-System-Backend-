@@ -109,6 +109,17 @@
             <artifactId>javax.json</artifactId>
             <version>1.1.4</version>
         </dependency>
+        <!-- excel -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>5.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>5.2.3</version>
+        </dependency>
         <!-- 安全支持 -->
         <dependency>
             <groupId>org.bouncycastle</groupId>

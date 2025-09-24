@@ -1,10 +1,14 @@
 package com.gugusb.hwics.smartmonitor2.entity.processstate;
 
+import com.gugusb.hwics.smartmonitor2.entity.FoamParams;
+import com.gugusb.hwics.smartmonitor2.entity.GasLiftParams;
+import com.gugusb.hwics.utils.DateSpawner;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "tb_gas_lift_state")
@@ -28,27 +32,38 @@ public class GasLiftProgressState {
     @Column(name = "last_duration")
     private Duration lastDuration;
 
+    @Column(name = "last_duration_second")
+    private Long lastDurationSecond;
+
+    @Column
+    @Embedded
+    private GasLiftParams gasLiftParams;
+
     public void fillAsEntity(){
-        this.updateTime = new Timestamp(System.currentTimeMillis());
+        this.updateTime = DateSpawner.getLocalTimestamp();
     }
 
     public GasLiftProgressState() {
         this.running = false;
         this.lastDuration = Duration.ZERO;
+        this.lastDurationSecond = (long) 0;
     }
 
     /**
      * 标记工艺开始
      */
-    public void start() {
+    public void start(GasLiftParams gasLiftParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
+        this.gasLiftParams = gasLiftParams;
     }
 
-    public void start(Duration duration) {
+    public void start(Duration duration, GasLiftParams gasLiftParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
         this.lastDuration = duration;
+        this.lastDurationSecond = duration.getSeconds();
+        this.gasLiftParams = gasLiftParams;
     }
 
     /**
@@ -80,7 +95,25 @@ public class GasLiftProgressState {
                 ", running=" + running +
                 ", lastStartTime=" + lastStartTime +
                 ", lastDuration=" + lastDuration +
+                ", lastDurationSecond=" + lastDurationSecond +
+                ", gasLiftParams=" + gasLiftParams +
                 '}';
+    }
+
+    public Long getLastDurationSecond() {
+        return lastDurationSecond;
+    }
+
+    public void setLastDurationSecond(Long lastDurationSecond) {
+        this.lastDurationSecond = lastDurationSecond;
+    }
+
+    public GasLiftParams getGasLiftParams() {
+        return gasLiftParams;
+    }
+
+    public void setGasLiftParams(GasLiftParams gasLiftParams) {
+        this.gasLiftParams = gasLiftParams;
     }
 
     public Integer getDataId() {

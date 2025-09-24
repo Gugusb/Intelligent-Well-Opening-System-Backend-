@@ -20,7 +20,7 @@ public abstract class BaseProcess {
     /**
      * 判断是否满足启动条件（由子类实现）
      */
-    public abstract boolean canStart(ProductionSnapshot snapshot);
+    public abstract boolean canStart(ProductionSnapshot snapshot, Object pm);
 
     /**
      * 工艺是否正在运行

@@ -3,12 +3,12 @@
   "leftElecBoxStatus": "混输气举撬123.左电气箱状态",
   "rightElecBoxStatus": "混输气举撬123.右电气箱状态",
 
-  "unit1RunStatus": "混输气举撬123-1.1#机组状态1",
-  "unit2RunStatus": "混输气举撬123-1.2#机组状态1",
-  "unit3RunStatus": "混输气举撬123-1.3#机组状态1",
-  "unit4RunStatus": "混输气举撬456.4#机组状态",
-  "unit5RunStatus": "混输气举撬456.5#机组状态",
-  "unit6RunStatus": "混输气举撬456.6#机组状态",
+  "unit1RunStatus": "混输气举撬123-3.1#机组启用或停运",
+  "unit2RunStatus": "混输气举撬123-3.2#机组启用或停运",
+  "unit3RunStatus": "混输气举撬123-3.3#机组启用或停运",
+  "unit4RunStatus": "混输气举撬456.4#机组启用或停运",
+  "unit5RunStatus": "混输气举撬456.5#机组启用或停运",
+  "unit6RunStatus": "混输气举撬456.5#机组启用或停运",
 
   "pump1StartCount": "混输气举撬123-3.1#机组启泵次数",
   "pump2StartCount": "混输气举撬123-3.2#机组启泵次数",
@@ -35,6 +35,8 @@
   "backPressure45": "混输气举撬456.45#后端压力",
   "gasliftBackPressure6": "混输气举撬456.6#后端压力值",
 
+  "flowmeterInstantGasFlow": "流量计1.瞬时气量",
+  "flowmeterInstantWaterFlow": "流量计1.瞬时液量",
   "flowmeterInstantFlow": "流量计1.瞬时流量",
   "flowmeterAccumulatedFlow": "流量计1.累计流量",
   "flowmeterMediumTemp": "流量计1.介质温度（℃）",

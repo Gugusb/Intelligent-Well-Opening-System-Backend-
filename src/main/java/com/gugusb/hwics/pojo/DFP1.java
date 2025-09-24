@@ -98,6 +98,10 @@ public class DFP1 {
     private Integer gasliftBackPressure6;     // 气举6#后端压力
 
     // 流量计参数 (浮点数)
+    @Column(name = "flowmeter_instant_gas_flow")
+    private Float flowmeterInstantGasFlow;       // 流量计瞬时流量
+    @Column(name = "flowmeter_instant_water_flow")
+    private Float flowmeterInstantWaterFlow;   // 流量计累计流量
     @Column(name = "flowmeter_instant_flow")
     private Double flowmeterInstantFlow;       // 流量计瞬时流量
     @Column(name = "flowmeter_accumulated_flow")
@@ -108,6 +112,22 @@ public class DFP1 {
     private Double flowmeterStaticPressure;     // 流量计静压值
     @Column(name = "flowmeter_diff_pressure")
     private Double flowmeterDiffPressure;      // 流量计压差值
+
+    public Float getFlowmeterInstantGasFlow() {
+        return flowmeterInstantGasFlow;
+    }
+
+    public void setFlowmeterInstantGasFlow(Float flowmeterInstantGasFlow) {
+        this.flowmeterInstantGasFlow = flowmeterInstantGasFlow;
+    }
+
+    public Float getFlowmeterInstantWaterFlow() {
+        return flowmeterInstantWaterFlow;
+    }
+
+    public void setFlowmeterInstantWaterFlow(Float flowmeterInstantWaterFlow) {
+        this.flowmeterInstantWaterFlow = flowmeterInstantWaterFlow;
+    }
 
     @Override
     public String toString() {
@@ -145,6 +165,8 @@ public class DFP1 {
                 ", backPressure123=" + backPressure123 +
                 ", backPressure45=" + backPressure45 +
                 ", gasliftBackPressure6=" + gasliftBackPressure6 +
+                ", flowmeterInstantGasFlow=" + flowmeterInstantGasFlow +
+                ", flowmeterInstantWaterFlow=" + flowmeterInstantWaterFlow +
                 ", flowmeterInstantFlow=" + flowmeterInstantFlow +
                 ", flowmeterAccumulatedFlow=" + flowmeterAccumulatedFlow +
                 ", flowmeterMediumTemp=" + flowmeterMediumTemp +

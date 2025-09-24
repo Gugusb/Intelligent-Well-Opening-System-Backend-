@@ -1,8 +1,10 @@
 package com.gugusb.hwics.smartmonitor2;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import com.gugusb.hwics.smartmonitor2.entity.ProductionSnapshot;
+import com.gugusb.hwics.utils.DateSpawner;
 
 /**
  * ===============================
@@ -28,7 +30,7 @@ public class DataReader {
     public static ProductionSnapshot readProductionSnapshot() {
         // 在真实实现中，这里应该调用 KepServer API 获取数据
         Random random = new Random();
-        LocalDateTime time = LocalDateTime.now();
+        LocalDateTime time = DateSpawner.getLocalTime();
         double gasRate = 1000 + random.nextDouble() * 100;  // 日产气量 m³/d
         double liquidRate = 50 + random.nextDouble() * 10;  // 日产液量 m³/d
         double wellheadPressure = 5 + random.nextDouble();  // 井口油压 MPa

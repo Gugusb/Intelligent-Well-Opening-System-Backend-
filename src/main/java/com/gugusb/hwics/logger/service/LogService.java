@@ -4,6 +4,7 @@ import com.gugusb.hwics.logger.entity.LogEntry;
 import com.gugusb.hwics.logger.enums.EventType;
 import com.gugusb.hwics.logger.enums.ProcessType;
 import com.gugusb.hwics.logger.mapper.LogRepository;
+import com.gugusb.hwics.utils.DateSpawner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,13 +43,14 @@ public class LogService {
     @Async
     @Transactional
     public void logProcessEvent(ProcessType processType, EventType eventType,
-                                String message, Map<String, Object> details) {
+                                String message, Map<String, Object> details, Integer systemId) {
         LogEntry entry = new LogEntry(
-                LocalDateTime.now(),
+                DateSpawner.getLocalTime(),
                 processType,
                 eventType,
                 message,
-                details
+                details,
+                systemId
         );
 
         // 保存到数据库
@@ -58,7 +60,7 @@ public class LogService {
         //uiNotification.notifyNewLog(entry);
 
         // 特殊事件处理
-        handleSpecialEvents(processType, eventType);
+        handleSpecialEvents(processType, eventType, systemId);
         System.out.println("进程日志打印" + ProcessType.SYSTEM + eventType + message);
     }
 
@@ -67,9 +69,9 @@ public class LogService {
      */
     @Async
     @Transactional
-    public void logSystemEvent(EventType eventType, String message) {
+    public void logSystemEvent(EventType eventType, String message, Integer sysId) {
         System.out.println("系统日志打印" + ProcessType.SYSTEM + eventType + message);
-        logProcessEvent(ProcessType.SYSTEM, eventType, message, null);
+        logProcessEvent(ProcessType.SYSTEM, eventType, message, null, sysId);
     }
 
     /**
@@ -77,8 +79,8 @@ public class LogService {
      */
     @Async
     @Transactional
-    public void logSystemEvent(EventType eventType, String message, Map<String, Object> details) {
-        logProcessEvent(ProcessType.SYSTEM, eventType, message, details);
+    public void logSystemEvent(EventType eventType, String message, Map<String, Object> details, Integer sysId) {
+        logProcessEvent(ProcessType.SYSTEM, eventType, message, details, sysId);
     }
 
     /**
@@ -112,18 +114,18 @@ public class LogService {
     }
 
     // 处理特殊事件（启动/结束）
-    private void handleSpecialEvents(ProcessType processType, EventType eventType) {
+    private void handleSpecialEvents(ProcessType processType, EventType eventType, Integer sysId) {
         if (eventType == EventType.START) {
-            scheduleHeartbeat(processType);
+            scheduleHeartbeat(processType, sysId);
         } else if (eventType == EventType.END) {
             cancelHeartbeat(processType);
         }
     }
 
     // 调度心跳日志
-    private void scheduleHeartbeat(ProcessType processType) {
+    private void scheduleHeartbeat(ProcessType processType, Integer sysId) {
         ScheduledFuture<?> task = scheduler.scheduleAtFixedRate(
-                () -> logHeartbeat(processType),
+                () -> logHeartbeat(processType, sysId),
                 HEARTBEAT_INTERVAL,
                 HEARTBEAT_INTERVAL,
                 TimeUnit.SECONDS
@@ -140,9 +142,9 @@ public class LogService {
     }
 
     // 记录心跳日志
-    private void logHeartbeat(ProcessType processType) {
+    private void logHeartbeat(ProcessType processType, Integer sysId) {
         String message = String.format("%s工艺运行中", processType.getDisplayName());
-        logProcessEvent(processType, EventType.HEARTBEAT, message, null);
+        logProcessEvent(processType, EventType.HEARTBEAT, message, null, sysId);
     }
 
     public List<LogEntry> getAllLogsOrderByTimestampDesc() {

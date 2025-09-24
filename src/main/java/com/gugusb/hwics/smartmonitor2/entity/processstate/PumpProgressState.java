@@ -1,10 +1,14 @@
 package com.gugusb.hwics.smartmonitor2.entity.processstate;
 
+import com.gugusb.hwics.smartmonitor2.entity.GasLiftParams;
+import com.gugusb.hwics.smartmonitor2.entity.PumpParams;
+import com.gugusb.hwics.utils.DateSpawner;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "tb_pump_state")
@@ -28,27 +32,38 @@ public class PumpProgressState {
     @Column(name = "last_duration")
     private Duration lastDuration;
 
+    @Column(name = "last_duration_second")
+    private Long lastDurationSecond;
+
+    @Column
+    @Embedded
+    private PumpParams pumpParams;
+
     public void fillAsEntity(){
-        this.updateTime = new Timestamp(System.currentTimeMillis());
+        this.updateTime = DateSpawner.getLocalTimestamp();
     }
 
     public PumpProgressState() {
         this.running = false;
         this.lastDuration = Duration.ZERO;
+        this.lastDurationSecond = (long) 0;
     }
 
     /**
      * 标记工艺开始
      */
-    public void start() {
+    public void start(PumpParams pumpParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
+        this.pumpParams = pumpParams;
     }
 
-    public void start(Duration duration) {
+    public void start(Duration duration, PumpParams pumpParams) {
         this.running = true;
-        this.lastStartTime = LocalDateTime.now();
+        this.lastStartTime = DateSpawner.getLocalTime();
         this.lastDuration = duration;
+        this.lastDurationSecond = duration.toSeconds();
+        this.pumpParams = pumpParams;
     }
 
     /**
@@ -80,7 +95,25 @@ public class PumpProgressState {
                 ", running=" + running +
                 ", lastStartTime=" + lastStartTime +
                 ", lastDuration=" + lastDuration +
+                ", lastDurationSecond=" + lastDurationSecond +
+                ", pumpParams=" + pumpParams +
                 '}';
+    }
+
+    public Long getLastDurationSecond() {
+        return lastDurationSecond;
+    }
+
+    public void setLastDurationSecond(Long lastDurationSecond) {
+        this.lastDurationSecond = lastDurationSecond;
+    }
+
+    public PumpParams getPumpParams() {
+        return pumpParams;
+    }
+
+    public void setPumpParams(PumpParams pumpParams) {
+        this.pumpParams = pumpParams;
     }
 
     public Integer getDataId() {

@@ -1,5 +1,6 @@
 package com.gugusb.hwics.smartmonitor2.entity;
 
+import com.gugusb.hwics.utils.DateSpawner;
 import jakarta.persistence.*;
 
 import java.sql.Timestamp;
@@ -33,7 +34,7 @@ public class SystemState {
     private Integer safeColseTag;
 
     public void fillAsEntity(){
-        this.updateTime = new Timestamp(System.currentTimeMillis());
+        this.updateTime = DateSpawner.getLocalTimestamp();
     }
 
     public void initState(){
