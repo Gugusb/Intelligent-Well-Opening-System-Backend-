@@ -14,6 +14,7 @@ package com.gugusb.hwics.conn;
 import com.google.common.collect.ImmutableList;
 import com.gugusb.hwics.mapper.DFP1Mapper;
 import com.gugusb.hwics.pojo.*;
+import com.gugusb.hwics.utils.DataTransfer;
 import org.eclipse.milo.opcua.sdk.client.OpcUaClient;
 import org.eclipse.milo.opcua.sdk.client.nodes.UaVariableNode;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
@@ -327,7 +328,11 @@ public class OPCUAReader implements ClientConnectManager{
     @Override
     public DFPMix run(OpcUaClient client, CompletableFuture<OpcUaClient> future) throws Exception {
         // synchronous connect
-        client.connect().get();
+        try{
+            client.connect().get();
+        }catch (Exception exception){
+            System.err.println(exception);
+        }
 
         DFPMix dfpMix = new DFPMix();
         dfpMix.setDfp1(storeDPF1(client));

@@ -33,8 +33,8 @@ public class DataReader {
         LocalDateTime time = DateSpawner.getLocalTime();
         double gasRate = 1000 + random.nextDouble() * 100;  // 日产气量 m³/d
         double liquidRate = 50 + random.nextDouble() * 10;  // 日产液量 m³/d
-        double wellheadPressure = 5 + random.nextDouble();  // 井口油压 MPa
-        double casingPressure = 3 + random.nextDouble();    // 井口套压 MPa
+        double wellheadPressure = 5 + random.nextDouble();  // 井口油压 MPa(记得/100)
+        double casingPressure = 3 + random.nextDouble();    // 井口套压 MPa(记得/100)
 
         return new ProductionSnapshot(time, gasRate, liquidRate, wellheadPressure, casingPressure, UnitStatus());
     }

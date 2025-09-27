@@ -26,10 +26,10 @@ public class DFP1 {
     private Integer currentMode;      // 当前模式，int
 
     @Column(name = "left_elec_box_status")
-    private Boolean leftElecBoxStatus; // 左电气箱状态，布尔
+    private Integer leftElecBoxStatus; // 左电气箱状态
 
     @Column(name = "right_elec_box_status")
-    private Boolean rightElecBoxStatus; // 右电气箱状态，布尔
+    private Integer rightElecBoxStatus; // 右电气箱状态
 
     // 1#-6#机组运行状态 (布尔)
     @Column(name = "unit1_run_status")
@@ -199,19 +199,19 @@ public class DFP1 {
         this.currentMode = currentMode;
     }
 
-    public Boolean getLeftElecBoxStatus() {
+    public Integer getLeftElecBoxStatus() {
         return leftElecBoxStatus;
     }
 
-    public void setLeftElecBoxStatus(Boolean leftElecBoxStatus) {
+    public void setLeftElecBoxStatus(Integer leftElecBoxStatus) {
         this.leftElecBoxStatus = leftElecBoxStatus;
     }
 
-    public Boolean getRightElecBoxStatus() {
+    public Integer getRightElecBoxStatus() {
         return rightElecBoxStatus;
     }
 
-    public void setRightElecBoxStatus(Boolean rightElecBoxStatus) {
+    public void setRightElecBoxStatus(Integer rightElecBoxStatus) {
         this.rightElecBoxStatus = rightElecBoxStatus;
     }
 
@@ -477,69 +477,6 @@ public class DFP1 {
 
     public void setFlowmeterDiffPressure(Double flowmeterDiffPressure) {
         this.flowmeterDiffPressure = flowmeterDiffPressure;
-    }
-
-    // 生成随机对象的方法
-    public static DFP1 createRandomInstance() {
-        Random random = new Random();
-        DFP1 randomObj = new DFP1();
-
-        // 设置当前时间
-        randomObj.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-
-        // 整型范围 [0, 100]
-        randomObj.setCurrentMode(random.nextInt(101));
-
-        // 布尔值随机
-        randomObj.setLeftElecBoxStatus(random.nextBoolean());
-        randomObj.setRightElecBoxStatus(random.nextBoolean());
-
-        // 机组运行状态随机
-        randomObj.setUnit1RunStatus(random.nextBoolean());
-        randomObj.setUnit2RunStatus(random.nextBoolean());
-        randomObj.setUnit3RunStatus(random.nextBoolean());
-        randomObj.setUnit4RunStatus(random.nextBoolean());
-        randomObj.setUnit5RunStatus(random.nextBoolean());
-        randomObj.setUnit6RunStatus(random.nextBoolean());
-
-        // 启泵次数范围 [0, 1000]
-        randomObj.setPump1StartCount(random.nextInt(1001));
-        randomObj.setPump2StartCount(random.nextInt(1001));
-        randomObj.setPump3StartCount(random.nextInt(1001));
-        randomObj.setPump4StartCount(random.nextInt(1001));
-        randomObj.setPump5StartCount(random.nextInt(1001));
-
-        // 气举启泵次数范围 [0, 500]
-        randomObj.setGasliftPump1StartCount(random.nextInt(501));
-        randomObj.setGasliftPump2StartCount(random.nextInt(501));
-
-        // 流量范围 [0, 10000]
-        randomObj.setTotalInstantFlow123(random.nextInt(10001));
-        randomObj.setTotalAccumulatedFlow123(random.nextInt(10001));
-        randomObj.setTotalInstantFlow45(random.nextInt(10001));
-        randomObj.setTotalAccumulatedFlow45(random.nextInt(10001));
-        randomObj.setGasliftInstantFlow(random.nextInt(10001));
-        randomObj.setGasliftAccumulatedFlow(random.nextInt(10001));
-
-        // 压力范围 [0, 2000]
-        randomObj.setFrontPressure1(random.nextInt(2001));
-        randomObj.setFrontPressure2(random.nextInt(2001));
-        randomObj.setFrontPressure3(random.nextInt(2001));
-        randomObj.setFrontPressure45(random.nextInt(2001));
-        randomObj.setGasliftFrontPressure5(random.nextInt(2001));
-        randomObj.setGasliftFrontPressure6(random.nextInt(2001));
-        randomObj.setBackPressure123(random.nextInt(2001));
-        randomObj.setBackPressure45(random.nextInt(2001));
-        randomObj.setGasliftBackPressure6(random.nextInt(2001));
-
-        // 浮点数范围 [0.0, 100.0] 保留两位小数
-        randomObj.setFlowmeterInstantFlow(roundToTwoDecimals(random.nextDouble() * 100));
-        randomObj.setFlowmeterAccumulatedFlow(roundToTwoDecimals(random.nextDouble() * 100));
-        randomObj.setFlowmeterMediumTemp(roundToTwoDecimals(random.nextDouble() * 100));
-        randomObj.setFlowmeterStaticPressure(roundToTwoDecimals(random.nextDouble() * 100));
-        randomObj.setFlowmeterDiffPressure(roundToTwoDecimals(random.nextDouble() * 100));
-
-        return randomObj;
     }
 
     // 私有方法：四舍五入保留两位小数

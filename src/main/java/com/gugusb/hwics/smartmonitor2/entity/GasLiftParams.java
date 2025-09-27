@@ -9,14 +9,14 @@ import java.util.Map;
 public class GasLiftParams {
     private double gasInjectionVolume; // 注气量 (m³)
     private double gasInjectionRate;   // 注气速率 (m³/min)
-    private double gasInjectionTime;   // 注气时间 (s)
+    private double gasInjectionTime;   // 注气时间 (h)
 
     // 启动条件
     private double startPressureDiff;
 
     // 默认参数
     private double gasInjectionRateDef;   // 加注速率 (m³/min)
-    private double gasInjectionTimeDef;   // 加注时间 (s)
+    private double gasInjectionTimeDef;   // 加注时间 (h)
 
     // 构造方法
     public GasLiftParams(double gasInjectionVolume, double gasInjectionRate, double gasInjectionTime, double startPressureDiff, double gasInjectionRateDef, double gasInjectionTimeDef) {

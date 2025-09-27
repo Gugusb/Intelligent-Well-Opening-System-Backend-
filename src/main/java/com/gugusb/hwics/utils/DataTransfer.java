@@ -9,7 +9,7 @@ public class DataTransfer {
     private static Map<String, Double> ts = new HashMap<>();
 
     static {
-        String head = "gugu通道2.";
+        String head = "";
         ts.put(head + "混输气举撬123.1#机组前端压力", 0.01);
         ts.put(head + "混输气举撬123.123#后端压力", 0.01);
         ts.put(head + "混输气举撬123.1#机启动压力", 0.01);

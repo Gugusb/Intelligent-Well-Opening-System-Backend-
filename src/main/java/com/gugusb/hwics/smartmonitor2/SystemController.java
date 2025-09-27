@@ -41,6 +41,21 @@ public class SystemController {
     @Autowired
     LogRepository logRepository;
 
+    @PostMapping("/gl-model-open")
+    public MessageRespnser<Boolean> setGasLiftModelOpen(){
+        return MessageRespnser.success(processController.setIsOpenGasLiftModel(true));
+    }
+
+    @PostMapping("/gl-model-close")
+    public MessageRespnser<Boolean> setGasLiftModelClose(){
+        return MessageRespnser.success(processController.setIsOpenGasLiftModel(false));
+    }
+
+    @GetMapping("/gl-model")
+    public MessageRespnser<Boolean> getGasLiftModel(){
+        return MessageRespnser.success(processController.getIsOpenGasLiftModel());
+    }
+
     @PostMapping("/system-reset-process")
     public MessageRespnser<String> resetProcess() {
         processController.restartAllProcess();
@@ -81,6 +96,11 @@ public class SystemController {
         if(processController.editParams(wellParams))
             return MessageRespnser.success("气井参数更新成功");
         return MessageRespnser.unsuccess("气井参数更新失败");
+    }
+
+    @PostMapping("/edit-craft")
+    public MessageRespnser<String> editCraft() {
+        return MessageRespnser.success("更新成功");
     }
 
     @PostMapping("/close-system")
@@ -137,6 +157,12 @@ public class SystemController {
         map.put("total_duration", "-");
         map.put("kept_duration", "-");
         map.put("progress", 0);
+        map.put("gl_model_open", 0);
+
+        // 气举模式开关
+        //if(processController.getIsOpenGasLiftModel()) map.put("gl_model_open", 1);
+        Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
+        if(dfp1 != null && dfp1.get()!=null && dfp1.get().getCurrentMode() !=null && dfp1.get().getCurrentMode() == 1)map.put("gl_model_open", 1);
         // 上次启动时间
         ProgressInfo timeInfo = calculateProgress(state.getLastStartTime(), Duration.ofSeconds(state.getLastDurationSecond()));
         if(state.getLastStartTime() != null)

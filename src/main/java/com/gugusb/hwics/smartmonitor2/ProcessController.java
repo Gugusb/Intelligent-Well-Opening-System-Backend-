@@ -3,6 +3,8 @@ package com.gugusb.hwics.smartmonitor2;
 import com.gugusb.hwics.logger.enums.EventType;
 import com.gugusb.hwics.logger.enums.ProcessType;
 import com.gugusb.hwics.logger.service.LogService;
+import com.gugusb.hwics.mapper.DFP1Mapper;
+import com.gugusb.hwics.pojo.DFP1;
 import com.gugusb.hwics.smartmonitor2.entity.*;
 import com.gugusb.hwics.smartmonitor2.entity.processstate.FoamProgressState;
 import com.gugusb.hwics.smartmonitor2.entity.processstate.GasLiftProgressState;
@@ -19,7 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,10 +45,14 @@ public class ProcessController {
     PumpPSMapper pumpPSMapper;
     @Autowired
     GasLiftPSMapper gasLiftPSMapper;
-
-    private FoamProcess foamProcess = new FoamProcess();
-    private PumpingProcess pumpingProcess = new PumpingProcess();
-    private GasLiftProcess gasLiftProcess = new GasLiftProcess();
+    @Autowired
+    DFP1Mapper dfp1Mapper;
+    @Autowired
+    FoamProcess foamProcess;
+    @Autowired
+    PumpingProcess pumpingProcess;
+    @Autowired
+    GasLiftProcess gasLiftProcess;
 
     private PumpProgressState pumpState = new PumpProgressState();
     private GasLiftProgressState gasLiftState = new GasLiftProgressState();
@@ -53,7 +61,8 @@ public class ProcessController {
     private SystemState systemState;
 
     private Integer startTag = 0;
-    Scheduler scheduler = new Scheduler(10);
+    private Boolean isOpenGasLiftModel = false;
+    Scheduler scheduler = new Scheduler(20);
     /**
      * 阶段0：系统未启动
      * 阶段1：系统启动，执行自检
@@ -211,7 +220,7 @@ public class ProcessController {
                         () -> {
                             monitorForPump();
                         },
-                        1,
+                        20,
                         1,
                         TimeUnit.MINUTES
                 );
@@ -220,7 +229,7 @@ public class ProcessController {
             }
         }
 
-        // (6) 泡排启动 30 分钟后 -> 每分钟检测一次气举开启条件（阶段6操作）
+        // (6) 泡排启动 20 小时后 -> 每分钟检测一次气举开启条件（阶段6操作）
         if(systemState.getSystemStage() == 6){
             scheduler.schedulePeriodic(
                     "Gas lift checking",
@@ -231,7 +240,15 @@ public class ProcessController {
                             storeSystemState();
                         }
                     },
-                    3,
+                    20 * 60,
+                    1,
+                    TimeUnit.MINUTES);
+            scheduler.schedulePeriodic(
+                    "Gas lift continue",
+                    ()->{
+                        this.monitorForGasLiftContinue();
+                    },
+                    20 * 60,
                     1,
                     TimeUnit.MINUTES);
             scheduler.schedulePeriodic(
@@ -243,7 +260,7 @@ public class ProcessController {
                                 systemState.setSystemStage(8);
                         }
                     },
-                    3,
+                    (20 + 5) * 60,
                     1,
                     TimeUnit.MINUTES);
         }
@@ -258,6 +275,14 @@ public class ProcessController {
                     1,
                     TimeUnit.MINUTES);
             scheduler.schedulePeriodic(
+                    "Gas lift continue",
+                    ()->{
+                        this.monitorForGasLiftContinue();
+                    },
+                    0,
+                    1,
+                    TimeUnit.MINUTES);
+            scheduler.schedulePeriodic(
                     "Foam checking",
                     ()->{
                         if(systemState.isFirstGasLiftStarted()){
@@ -266,7 +291,7 @@ public class ProcessController {
                                 systemState.setSystemStage(8);
                         }
                     },
-                    3,
+                    (5) * 60,
                     1,
                     TimeUnit.MINUTES);
         }
@@ -277,6 +302,14 @@ public class ProcessController {
                     "Gas lift checking",
                     ()->{
                         this.monitorForGasLift();
+                    },
+                    0,
+                    1,
+                    TimeUnit.MINUTES);
+            scheduler.schedulePeriodic(
+                    "Gas lift continue",
+                    ()->{
+                        this.monitorForGasLiftContinue();
                     },
                     0,
                     1,
@@ -307,6 +340,9 @@ public class ProcessController {
         storeSystemState();
         // 创建新的计时器
         this.scheduler = new Scheduler(10);
+        // 设置为系统未开启 + 气举未开启
+        this.isOpenGasLiftModel = false;
+        this.startTag = 0;
         // 工艺状态保存(不做修改)
         logService.logProcessEvent(ProcessType.SYSTEM, EventType.END, "系统已经关闭", null, systemState.getDataId());
         return true;
@@ -370,6 +406,12 @@ public class ProcessController {
             systemState.setFirstGasLiftStarted(true);
             storeSystemState();
         }
+        // 如果没有确认气举模式已开 不予后续操作
+        Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
+        if(dfp1 == null)return;
+        if(dfp1.get().getCurrentMode() == null)return;
+        if(dfp1.get().getCurrentMode() == 0)return;
+        // 如果气举已经开启 不予后续操作
         if(gasLiftState.isRunning())return;
         if (systemState.isSystemRunning()) {
             // 计算出工艺参数及开启条件
@@ -415,6 +457,46 @@ public class ProcessController {
         }
     }
 
+    private void monitorForGasLiftContinue(){
+        System.out.println("=====气举延续条件监测=====");
+        if (!systemState.isSystemRunning())return;
+        if(!gasLiftState.isRunning())return;
+        // 如果没有确认气举模式已开 不予后续操作
+        Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
+        if(dfp1 == null)return;
+        if(dfp1.get().getCurrentMode() == null)return;
+        if(dfp1.get().getCurrentMode() == 0)return;
+        // 如果气举时间不足3个小时，则开启气举关闭条件监测
+        LocalDateTime lastStart = gasLiftState.getLastStartTime();
+        Duration lastDuration = gasLiftState.getLastDuration();
+        LocalDateTime endTime = lastStart.plus(lastDuration);
+        LocalDateTime now = LocalDateTime.now();
+        ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
+        // 如果当前时间已经超过结束时间，剩余时间为0
+        if (now.isAfter(endTime)) {
+            return;
+        }
+        // 计算剩余时间
+        Duration remaining = Duration.between(now, endTime);
+        // 判断剩余时间是否处于结束前10-70分钟
+        if(remaining.compareTo(Duration.ofMinutes(10)) > 0 && remaining.compareTo(Duration.ofMinutes(70)) < 0){
+            // 如果符合条件，则增加10h气举时间
+            if(gasLiftProcess.needContinue(snapshot, gasLiftState)){
+                Integer addHours = 10;
+                gasLiftProcess.startWithHours((double) addHours);
+                gasLiftState.start(Duration.ofSeconds((long)addHours));
+                storeProcessState();
+                logService.logProcessEvent(ProcessType.GAS_LIFT, EventType.START,
+                        "气举工艺时间延长10小时", null, systemState.getDataId());
+                gasLiftProcess.initContinueProcess();
+            }
+        }else{
+            gasLiftProcess.initContinueProcess();
+        }
+
+        //
+    }
+
     private void storeSystemState(){
         systemState.fillAsEntity();
         systemStateMapper.save(systemState);
@@ -437,7 +519,7 @@ public class ProcessController {
 
     private void checkProcessState(){
         // 0Pump 1Foam 2GasLift
-        List<Boolean>  realStates = deviceManager.getProcessState();
+        Map<String, Boolean> realStates = deviceManager.getProcessState();
         //pumpState.setRunning(realStates.get(0));
         //foamState.setRunning(realStates.get(1));
         //gasLiftState.setRunning(realStates.get(2));
@@ -469,5 +551,14 @@ public class ProcessController {
         if(systemState == null)return 0;
         if(systemState.getDataId() == null)return 0;
         return systemState.getDataId();
+    }
+
+    public Boolean getIsOpenGasLiftModel(){
+        return this.isOpenGasLiftModel;
+    }
+
+    public Boolean setIsOpenGasLiftModel(Boolean bl){
+        this.isOpenGasLiftModel = bl;
+        return this.isOpenGasLiftModel;
     }
 }

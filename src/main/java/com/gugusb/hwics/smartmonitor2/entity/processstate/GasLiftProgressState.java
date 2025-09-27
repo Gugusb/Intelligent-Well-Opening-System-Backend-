@@ -66,6 +66,13 @@ public class GasLiftProgressState {
         this.gasLiftParams = gasLiftParams;
     }
 
+    public void start(Duration duration) {
+        this.running = true;
+        this.lastStartTime = DateSpawner.getLocalTime();
+        this.lastDuration = duration;
+        this.lastDurationSecond = duration.getSeconds();
+    }
+
     /**
      * 标记工艺结束
      */

@@ -42,6 +42,10 @@ public class OpcuaService implements IOpcuaService {
     public void readPageData() throws Exception {
         OPCUAReader example = new OPCUAReader();
         DFPMix newDfpm = new ClientConnectManagerRunner(example, true).run();
+        if(newDfpm == null){
+            System.out.println("OPCUA连接失败，未成功构造存储单元");
+            return;
+        }
         DFP1 dfp1 = newDfpm.getDfp1();
         dfp1Mapper.save(dfp1);
         dfp2Mapper.save(newDfpm.getDfp2());
