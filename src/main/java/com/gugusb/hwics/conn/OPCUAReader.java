@@ -103,7 +103,9 @@ public class OPCUAReader implements ClientConnectManager{
                 testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }
+        System.out.println(dfp1.toString());
         dfp1.fixData();
+
         testPrint("=========Page1数据更新完成========");
         return dfp1;
     }

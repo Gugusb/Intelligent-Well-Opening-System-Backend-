@@ -41,7 +41,7 @@ public class OPCUAWriter implements ClientConnectManager {
 //    }
 
     public OPCUAWriter(Short data, String place) {
-        this.v = new Variant(data);
+        this.v = new Variant(Unsigned.ushort(data));
         this.place = place;
     }
 
