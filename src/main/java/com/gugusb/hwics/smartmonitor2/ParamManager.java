@@ -48,7 +48,7 @@ public class ParamManager {
         double FoamInjectionVolumeDef = 2000 * liquidLoadVolumeDef * 0.05 / (1 - 0.05 - 0.05 * 4);
 
         //加注速率 已知 升/小时
-        double FoamInjectionRateDef = 9;
+        double FoamInjectionRateDef = 60 * 10;
         //加注时间 单位小时
         double FoamInjectionTimeDef = (double) 1 / 3;
 

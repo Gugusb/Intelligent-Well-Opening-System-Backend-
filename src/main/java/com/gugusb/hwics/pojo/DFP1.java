@@ -23,7 +23,7 @@ public class DFP1 {
     private Timestamp updateTime;  // 存储时间
 
     @Column(name = "current_mode")
-    private Integer currentMode;      // 当前模式，int
+    private Boolean currentMode;      // 当前模式，int
 
     @Column(name = "left_elec_box_status")
     private Integer leftElecBoxStatus; // 左电气箱状态
@@ -191,11 +191,11 @@ public class DFP1 {
         this.updateTime = updateTime;
     }
 
-    public Integer getCurrentMode() {
+    public Boolean getCurrentMode() {
         return currentMode;
     }
 
-    public void setCurrentMode(Integer currentMode) {
+    public void setCurrentMode(Boolean currentMode) {
         this.currentMode = currentMode;
     }
 

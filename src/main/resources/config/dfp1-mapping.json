@@ -3,9 +3,9 @@
   "leftElecBoxStatus": "混输气举撬123-3.报警代码",
   "rightElecBoxStatus": "混输气举撬456.报警代码1",
 
-  "unit1RunStatus": "混输气举撬123-3.1#机组启用或停运",
-  "unit2RunStatus": "混输气举撬123-3.2#机组启用或停运",
-  "unit3RunStatus": "混输气举撬123-3.3#机组启用或停运",
+  "unit1RunStatus": "混输气举撬123-1.1#机组状态1",
+  "unit2RunStatus": "混输气举撬123-1.2#机组状态1",
+  "unit3RunStatus": "混输气举撬123-1.3#机组状态1",
   "unit4RunStatus": "混输气举撬456.4#机组状态",
   "unit5RunStatus": "混输气举撬456.5#机组状态",
   "unit6RunStatus": "混输气举撬456.6#机组状态",

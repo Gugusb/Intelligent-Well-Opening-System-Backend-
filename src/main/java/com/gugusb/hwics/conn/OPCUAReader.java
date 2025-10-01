@@ -91,15 +91,25 @@ public class OPCUAReader implements ClientConnectManager{
                     field.set(dfp1, value.toString());
                 }
                 else if (field.getType() == boolean.class || field.getType() == Boolean.class) {
-                    testPrint(tag + value.toString());
-                    if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
-                        field.set(dfp1, false);
-                    }else
-                        field.set(dfp1, true);
+                    if(Objects.equals(tag, "混输气举撬456.当前模式")){
+                        if(Objects.equals(value.toString(), "0") || Objects.equals(value.toString(), "false")){
+                            field.set(dfp1, false);
+                        }else
+                            field.set(dfp1, true);
+                    }else{
+                        if(Objects.equals(value.toString(), "1") || Objects.equals(value.toString(), "false")){
+                            field.set(dfp1, false);
+                        }else
+                            field.set(dfp1, true);
+                    }
+
                 }
                 // 添加其他类型处理...
                 testPrint("标签处理成功 [" + tag + "]: ");
             } catch (Exception e) {
+                if(Objects.equals(tag, "混输气举撬456.当前模式")){
+                    System.err.println("标签处理失败 [" + tag + "]: " + e.getMessage());
+                }
                 testErr("标签处理失败 [" + tag + "]: " + e.getMessage());
             }
         }

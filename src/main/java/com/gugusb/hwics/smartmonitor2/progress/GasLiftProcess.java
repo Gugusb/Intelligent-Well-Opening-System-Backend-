@@ -19,7 +19,7 @@ public class GasLiftProcess{
     protected boolean inCooldown = false;
     // 判断气举是否开启
     private Integer conditionProcess = 0;
-    private static Integer maxConditionProcess = 60 * 2;
+    private static Integer maxConditionProcess = 1 * 2;
     private static Double conditionHitRate = 0.6;
     // 判断气举是否续费
     private Double continueAvg = 0.0;
@@ -57,7 +57,9 @@ public class GasLiftProcess{
             conditionProcess = 0;
             return true;
         }else{
-            if(snapshot.getWellheadPressure() < 0.2){
+            System.out.println("当前生产" + snapshot.toString());
+            if(snapshot.getWellheadPressure() / 100 < 3){
+                System.out.println("【GasLiftProcess】油压低于警戒值，气举启动进度：" + conditionProcess + "/" + maxConditionProcess * conditionHitRate);
                 conditionProcess += 1;
             }else{
                 conditionProcess -= 1;

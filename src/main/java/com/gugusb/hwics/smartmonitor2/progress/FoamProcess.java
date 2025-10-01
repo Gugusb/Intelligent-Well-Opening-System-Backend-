@@ -20,13 +20,14 @@ public class FoamProcess{
     protected boolean running = false;
     protected boolean inCooldown = false;
     private Integer conditionProcess = 0;
-    private static Integer maxConditionProcess = 1 * 60;
+    private static Integer maxConditionProcess = 1 * 6;
     private static Double conditionHitRate = 0.6;
 
-    public void startWithParams(FoamParams params) {
+    public void startWithParams(FoamParams params){
         // TODO: 调用 Kepserver 写入逻辑，开启泡排设备
         System.out.println("[泡排] 开启工艺，使用参数: " + params);
-        deviceManager.turnOnFoam();
+        deviceManager.turnOnFoam(LocalDateTime.now().plus(Duration.ofMinutes(2)),
+                Duration.ofMillis(Math.round(params.getInjectionTimeDef() * 3_600_000)));
         gasLiftTimer.addTask(LocalDateTime.now().plus(Duration.ofMinutes(2)),
                 Duration.ofMillis(Math.round(params.getInjectionTimeDef() * 3_600_000)));
         running = true;
@@ -44,7 +45,8 @@ public class FoamProcess{
             conditionProcess = 0;
             return true;
         }else{
-            if(snapshot.getCasingPressure() - snapshot.getWellheadPressure() < 2.0){
+            if(snapshot.getCasingPressure() - snapshot.getWellheadPressure() < 20.0){
+                System.out.println("【FomaProccess】:气井油套压差过大，若长时间如此将开启泡排");
                 conditionProcess += 1;
             }else{
                 conditionProcess -= 1;

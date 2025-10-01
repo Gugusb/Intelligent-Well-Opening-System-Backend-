@@ -203,6 +203,7 @@ public class ProcessController {
 
         // (5) 泡排结束 20 分钟后 -> 启动抽汲工艺（阶段5操作）
         if(systemState.getSystemStage() >= 5){
+            // 超过阶段5时，直接开启抽吸监测
             if(systemState.getSystemStage() > 5){
                 scheduler.schedulePeriodic(
                         "Start pump check",
@@ -214,13 +215,14 @@ public class ProcessController {
                         TimeUnit.MINUTES
                 );
             }
+            // 恰好为阶段5时，一段时间后开启抽吸监测
             if(systemState.getSystemStage() == 5){
                 scheduler.schedulePeriodic(
                         "Start pump check",
                         () -> {
                             monitorForPump();
                         },
-                        20,
+                        20 / 10,
                         1,
                         TimeUnit.MINUTES
                 );
@@ -240,7 +242,7 @@ public class ProcessController {
                             storeSystemState();
                         }
                     },
-                    20 * 60,
+                    20 * 60 / 400,
                     1,
                     TimeUnit.MINUTES);
             scheduler.schedulePeriodic(
@@ -248,7 +250,7 @@ public class ProcessController {
                     ()->{
                         this.monitorForGasLiftContinue();
                     },
-                    20 * 60,
+                    20 * 60 / 400,
                     1,
                     TimeUnit.MINUTES);
             scheduler.schedulePeriodic(
@@ -260,7 +262,7 @@ public class ProcessController {
                                 systemState.setSystemStage(8);
                         }
                     },
-                    (20 + 5) * 60,
+                    (20 + 5) * 60 / 400,
                     1,
                     TimeUnit.MINUTES);
         }
@@ -401,7 +403,7 @@ public class ProcessController {
      * 监测气举工艺启动条件（GL1）
      */
     private void monitorForGasLift() {
-        System.out.println("=====气举条件监测=====");
+        System.out.println("=====气举条件监测-开始=====");
         if (gasLiftState.isRunning()){
             systemState.setFirstGasLiftStarted(true);
             storeSystemState();
@@ -409,10 +411,14 @@ public class ProcessController {
         // 如果没有确认气举模式已开 不予后续操作
         Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
         if(dfp1 == null)return;
+        System.out.println("=====气举条件监测-气举模式监测开始=====");
         if(dfp1.get().getCurrentMode() == null)return;
-        if(dfp1.get().getCurrentMode() == 0)return;
+        System.out.println("-------气举：" + dfp1.get().getCurrentMode());
+        if((dfp1.get().getCurrentMode()))return;
+        System.out.println("=====气举条件监测-气举模式正确=====");
         // 如果气举已经开启 不予后续操作
         if(gasLiftState.isRunning())return;
+        System.out.println("=====气举没有正在运行=====");
         if (systemState.isSystemRunning()) {
             // 计算出工艺参数及开启条件
             ProductionSnapshot snapshot = DataReader.readProductionSnapshot();
@@ -465,7 +471,7 @@ public class ProcessController {
         Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
         if(dfp1 == null)return;
         if(dfp1.get().getCurrentMode() == null)return;
-        if(dfp1.get().getCurrentMode() == 0)return;
+        if(!dfp1.get().getCurrentMode())return;
         // 如果气举时间不足3个小时，则开启气举关闭条件监测
         LocalDateTime lastStart = gasLiftState.getLastStartTime();
         Duration lastDuration = gasLiftState.getLastDuration();
@@ -520,19 +526,20 @@ public class ProcessController {
     private void checkProcessState(){
         // 0Pump 1Foam 2GasLift
         Map<String, Boolean> realStates = deviceManager.getProcessState();
-        //pumpState.setRunning(realStates.get(0));
-        //foamState.setRunning(realStates.get(1));
-        //gasLiftState.setRunning(realStates.get(2));
+        pumpState.setRunning(realStates.get("pump"));
+        foamState.setRunning(realStates.get("foam"));
+        gasLiftState.setRunning(realStates.get("gas_lift"));
     }
 
     private void checkAll(){
+        //存储所有的状态
+        storeAllState();
+        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
+
         //检查设备是否关闭，如果关闭则更新state
         checkProcessState();
         logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕", systemState.getDataId());
 
-        //存储所有的状态
-        storeAllState();
-        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
     }
 
     public boolean isRunning() {

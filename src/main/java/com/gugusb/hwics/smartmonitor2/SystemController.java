@@ -162,7 +162,7 @@ public class SystemController {
         // 气举模式开关
         //if(processController.getIsOpenGasLiftModel()) map.put("gl_model_open", 1);
         Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
-        if(dfp1 != null && dfp1.get()!=null && dfp1.get().getCurrentMode() !=null && dfp1.get().getCurrentMode() == 1)map.put("gl_model_open", 1);
+        if(dfp1 != null && dfp1.get()!=null && dfp1.get().getCurrentMode() !=null && dfp1.get().getCurrentMode())map.put("gl_model_open", 1);
         // 上次启动时间
         ProgressInfo timeInfo = calculateProgress(state.getLastStartTime(), Duration.ofSeconds(state.getLastDurationSecond()));
         if(state.getLastStartTime() != null)

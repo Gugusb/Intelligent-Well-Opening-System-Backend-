@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -64,35 +66,77 @@ public class DeviceControllerTest {
         return MessageRespnser.success(true);
     }
 
+    @PostMapping("/start-pump")
+    public MessageRespnser<Boolean> startPump() throws Exception{
+        WriterDTO writerDTO = new WriterDTO();
+        writerDTO.setDataType("short");
+        writerDTO.setDataShort((short) 1);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.1#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.2#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.3#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬456.4#机组启用或停运");
+        writeData(writerDTO);
+
+        return MessageRespnser.success(true);
+    }
+
+    @PostMapping("/end-pump")
+    public MessageRespnser<Boolean> endPump() throws Exception{
+        WriterDTO writerDTO = new WriterDTO();
+        writerDTO.setDataType("short");
+        writerDTO.setDataShort((short) 1);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.1#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.2#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬123-3.3#机组启用或停运");
+        writeData(writerDTO);
+        writerDTO.setPlace("gugu通道2.混输气举撬456.4#机组启用或停运");
+        writeData(writerDTO);
+
+        return MessageRespnser.success(true);
+    }
+
     @PostMapping("/start-form")
     public MessageRespnser<Boolean> startFM() throws Exception {
         WriterDTO writerDTO = new WriterDTO();
-        writerDTO.setDataType("short");;
+        writerDTO.setDataType("short");
 
-        short startHour = 0;
-        short startMin = 0;
-        short stopHour = 0;
-        short stopMin = 0;
+        LocalDateTime time = LocalDateTime.now().plus(Duration.ofMinutes(2));
+        LocalDateTime endtime = time.plus(Duration.ofMinutes(5));
 
-        // 开始时
-        writerDTO.setPlace("gugu通道2.加药.启动时");
-        writerDTO.setDataShort(startHour);
-        writeData(writerDTO);
+        short startHour = (short) time.getHour();
+        short startMin = (short) time.getMinute();
+        short stopHour = (short) endtime.getHour();
+        short stopMin = (short) endtime.getMinute();
 
-        // 开始分
-        writerDTO.setPlace("gugu通道2.加药.启动分");
-        writerDTO.setDataShort(startMin);
-        writeData(writerDTO);
+        System.out.println("泡排时间：" + startHour + " " + startMin + " / " +
+                stopHour + " " + stopMin);
 
-        // 结束时
-        writerDTO.setPlace("gugu通道2.加药.结束时");
-        writerDTO.setDataShort(stopHour);
-        writeData(writerDTO);
+        if(true){
+            // 开始时
+            writerDTO.setPlace("gugu通道2.加药.时间1-启动时");
+            writerDTO.setDataShort(startHour);
+            writeData(writerDTO);
 
-        // 结束分
-        writerDTO.setPlace("gugu通道2.加药.结束分");
-        writerDTO.setDataShort(stopMin);
-        writeData(writerDTO);
+            // 开始分
+            writerDTO.setPlace("gugu通道2.加药.时间1-启动分");
+            writerDTO.setDataShort(startMin);
+            writeData(writerDTO);
+
+            // 结束时
+            writerDTO.setPlace("gugu通道2.加药.时间1-停止时");
+            writerDTO.setDataShort(stopHour);
+            writeData(writerDTO);
+
+            // 结束分
+            writerDTO.setPlace("gugu通道2.加药.时间1-停止分");
+            writerDTO.setDataShort(stopMin);
+            writeData(writerDTO);
+        }
 
         return MessageRespnser.success(true);
     }
