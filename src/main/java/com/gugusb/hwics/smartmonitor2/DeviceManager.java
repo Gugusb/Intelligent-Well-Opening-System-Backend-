@@ -214,16 +214,16 @@ public class DeviceManager {
         if(dfp4.get() == null)return map;
 
         // 机组1开启就视为开启抽吸
-        if(dfp1.get().getUnit1RunStatus()){
+        if(dfp1.get().getUnit1RunStatus() != null && dfp1.get().getUnit1RunStatus()){
             map.put("pump", true);
             System.out.println("抽吸为开启状态");
         }
         // 检查泡排开关判定是否开启泡排
-        if(dfp4.get().getDosingRunStatus()){
+        if(dfp4.get().getDosingRunStatus() != null && dfp4.get().getDosingRunStatus()){
             map.put("foam", true);
         }
         // 检查45的开关
-        if(dfp1.get().getCurrentMode()){
+        if(dfp1.get().getCurrentMode() != null && dfp1.get().getCurrentMode()){
             if(dfp1.get().getUnit5RunStatus() && dfp1.get().getUnit6RunStatus()){
                 map.put("gas_lift", true);
             }

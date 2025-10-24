@@ -414,7 +414,7 @@ public class ProcessController {
         System.out.println("=====气举条件监测-气举模式监测开始=====");
         if(dfp1.get().getCurrentMode() == null)return;
         System.out.println("-------气举：" + dfp1.get().getCurrentMode());
-        if((dfp1.get().getCurrentMode()))return;
+        if(!(dfp1.get().getCurrentMode()))return;
         System.out.println("=====气举条件监测-气举模式正确=====");
         // 如果气举已经开启 不予后续操作
         if(gasLiftState.isRunning())return;
@@ -534,12 +534,16 @@ public class ProcessController {
     private void checkAll(){
         //存储所有的状态
         storeAllState();
-        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
+        //logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
 
         //检查设备是否关闭，如果关闭则更新state
         checkProcessState();
-        logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕", systemState.getDataId());
+        //logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕", systemState.getDataId());
+    }
 
+    private void checkAllLog(){
+        logService.logSystemEvent(EventType.PARAM_CHANGE, "智能控制状态存储完毕", systemState.getDataId());
+        logService.logSystemEvent(EventType.PARAM_CHANGE, "现场设备状态检查完毕", systemState.getDataId());
     }
 
     public boolean isRunning() {

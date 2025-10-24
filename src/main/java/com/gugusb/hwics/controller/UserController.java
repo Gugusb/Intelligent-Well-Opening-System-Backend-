@@ -55,7 +55,10 @@ public class UserController {
             sessionCookie.setSecure(true);
             sessionCookie.setPath("/");
             sessionCookie.setMaxAge(30 * 60);
-            response.addCookie(sessionCookie);
+
+            //response.addCookie(sessionCookie);
+            response.addHeader("Set-Cookie",
+                    "SESSION_ID=" + session.getId() + "; Path=/; Domain=io12jltvy2.fy.takin.cc/; Secure; HttpOnly; SameSite=None");
             System.out.println("创建Cookie: " + response.getHeader("Set-Cookie"));
         }
 

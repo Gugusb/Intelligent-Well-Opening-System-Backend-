@@ -1,5 +1,9 @@
 package com.gugusb.hwics.smartmonitor2;
 
+import com.gugusb.hwics.mapper.DFP1Mapper;
+import com.gugusb.hwics.mapper.DFP4Mapper;
+import com.gugusb.hwics.pojo.DFP1;
+import com.gugusb.hwics.pojo.DFP4;
 import com.gugusb.hwics.pojo.dto.WriterDTO;
 import com.gugusb.hwics.service.OpcuaService;
 import com.gugusb.hwics.smartmonitor2.progress.FoamProcess;
@@ -14,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
@@ -25,9 +32,15 @@ public class DeviceControllerTest {
     PumpingProcess pumpingProcess;
     @Autowired
     GasLiftProcess gasLiftProcess;
+    @Autowired
+    DFP1Mapper dfp1Mapper;
+    @Autowired
+    DFP4Mapper dfp4Mapper;
 
     @Autowired
     OpcuaService opcuaService;
+
+    Boolean isReal = false;
 
     @PostMapping("/continue-gas-lift/{hours}")
     public MessageRespnser<Boolean> openGL(@PathVariable Double hours){
@@ -106,7 +119,7 @@ public class DeviceControllerTest {
         writerDTO.setDataType("short");
 
         LocalDateTime time = LocalDateTime.now().plus(Duration.ofMinutes(2));
-        LocalDateTime endtime = time.plus(Duration.ofMinutes(5));
+        LocalDateTime endtime = time.plus(Duration.ofMinutes(15));
 
         short startHour = (short) time.getHour();
         short startMin = (short) time.getMinute();
@@ -116,7 +129,7 @@ public class DeviceControllerTest {
         System.out.println("泡排时间：" + startHour + " " + startMin + " / " +
                 stopHour + " " + stopMin);
 
-        if(true){
+        if(isReal){
             // 开始时
             writerDTO.setPlace("gugu通道2.加药.时间1-启动时");
             writerDTO.setDataShort(startHour);
@@ -146,31 +159,75 @@ public class DeviceControllerTest {
         WriterDTO writerDTO = new WriterDTO();
         writerDTO.setDataType("short");;
 
-        short startHour = 0;
-        short startMin = 0;
-        short stopHour = 0;
-        short stopMin = 0;
+        LocalDateTime time = LocalDateTime.now().plus(Duration.ofMinutes(2));
+        LocalDateTime endtime = time;
 
-        // 开始时
-        writerDTO.setPlace("gugu通道2.加药.启动时");
-        writerDTO.setDataShort(startHour);
-        writeData(writerDTO);
+        short startHour = (short) time.getHour();
+        short startMin = (short) time.getMinute();
+        short stopHour = (short) endtime.getHour();
+        short stopMin = (short) endtime.getMinute();
 
-        // 开始分
-        writerDTO.setPlace("gugu通道2.加药.启动分");
-        writerDTO.setDataShort(startMin);
-        writeData(writerDTO);
+        System.out.println("泡排时间：" + startHour + " " + startMin + " / " +
+                stopHour + " " + stopMin);
 
-        // 结束时
-        writerDTO.setPlace("gugu通道2.加药.结束时");
-        writerDTO.setDataShort(stopHour);
-        writeData(writerDTO);
+        if (isReal) {
 
-        // 结束分
-        writerDTO.setPlace("gugu通道2.加药.结束分");
-        writerDTO.setDataShort(stopMin);
-        writeData(writerDTO);
+            // 开始时
+            writerDTO.setPlace("gugu通道2.加药.启动时");
+            writerDTO.setDataShort(startHour);
+            writeData(writerDTO);
 
+            // 开始分
+            writerDTO.setPlace("gugu通道2.加药.启动分");
+            writerDTO.setDataShort(startMin);
+            writeData(writerDTO);
+
+            // 结束时
+            writerDTO.setPlace("gugu通道2.加药.结束时");
+            writerDTO.setDataShort(stopHour);
+            writeData(writerDTO);
+
+            // 结束分
+            writerDTO.setPlace("gugu通道2.加药.结束分");
+            writerDTO.setDataShort(stopMin);
+            writeData(writerDTO);
+        }
+
+        return MessageRespnser.success(true);
+    }
+
+    @PostMapping("/check-state")
+    public MessageRespnser<Boolean> getProcessState() {
+        Map<String, Boolean> map = new HashMap<>();
+        // 0抽吸 1泡排 2气举
+        map.put("gas_lift", false);
+        map.put("foam", false);
+        map.put("pump", false);
+
+        Optional<DFP1> dfp1 = dfp1Mapper.findFirstByOrderByDataIdDesc();
+        if(dfp1 == null)return MessageRespnser.success(false);
+        if(dfp1.get() == null)return MessageRespnser.success(false);
+
+        Optional<DFP4> dfp4 = dfp4Mapper.findFirstByOrderByDataIdDesc();
+        if(dfp4 == null)return MessageRespnser.success(false);
+        if(dfp4.get() == null)return MessageRespnser.success(false);
+
+        // 机组1开启就视为开启抽吸
+        if(dfp1.get().getUnit1RunStatus() != null && dfp1.get().getUnit1RunStatus()){
+            map.put("pump", true);
+        }
+        // 检查泡排开关判定是否开启泡排
+        if(dfp4.get().getDosingRunStatus() != null && dfp4.get().getDosingRunStatus()){
+            map.put("foam", true);
+        }
+        // 检查45的开关
+        if(dfp1.get().getCurrentMode() != null && dfp1.get().getCurrentMode()){
+            if((dfp1.get().getUnit5RunStatus() != null && dfp1.get().getUnit5RunStatus()) ||
+                    (dfp1.get().getUnit6RunStatus() != null && dfp1.get().getUnit6RunStatus())){
+                map.put("gas_lift", true);
+            }
+        }
+        System.out.println(map);
         return MessageRespnser.success(true);
     }
 
